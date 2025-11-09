@@ -72,3 +72,55 @@ class MessageProtocol:
     @staticmethod
     def parse_message(message: str) -> Dict[str, Any]:
         return json.loads(message)
+    
+    @staticmethod
+    def create_publish_message(user: str, channel: str, message: str) -> str:
+        return MessageProtocol.create_message("publish", {
+            "user": user,
+            "channel": channel,
+            "message": message,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    @staticmethod
+    def create_publish_response(success: bool, description: str = "") -> str:
+        status = "OK" if success else "erro"
+        return MessageProtocol.create_message("publish", {
+            "status": status,
+            "message": description,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    @staticmethod
+    def create_private_message(src: str, dst: str, message: str) -> str:
+        return MessageProtocol.create_message("message", {
+            "src": src,
+            "dst": dst,
+            "message": message,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    @staticmethod
+    def create_private_message_response(success: bool, description: str = "") -> str:
+        status = "OK" if success else "erro"
+        return MessageProtocol.create_message("message", {
+            "status": status,
+            "message": description,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    @staticmethod
+    def create_pubsub_message(sender: str, content: str, target: str = None) -> str:
+        """Mensagem para publicação via Pub/Sub"""
+        message = {
+            "sender": sender,
+            "content": content,
+            "timestamp": datetime.now().isoformat()
+        }
+        if target:
+            message["target"] = target
+        return json.dumps(message)
+    
+    @staticmethod
+    def parse_pubsub_message(message: str) -> Dict[str, Any]:
+        return json.loads(message)
