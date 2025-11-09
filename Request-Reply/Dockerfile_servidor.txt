@@ -1,0 +1,13 @@
+FROM python:3.13.7-alpine3.21
+
+WORKDIR /app
+
+RUN pip install pyzmq
+
+COPY ./servidor.py .
+COPY persistence.py .
+COPY common/ ./common/
+
+RUN mkdir -p /app/data
+
+CMD ["python", "servidor.py"]
