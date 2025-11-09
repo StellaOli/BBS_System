@@ -9,6 +9,7 @@ class BBSPersistence:
         self.users_file = os.path.join(data_dir, "users.json")
         self.channels_file = os.path.join(data_dir, "channels.json")
         self.logins_file = os.path.join(data_dir, "logins.json")
+        self.messages_file = os.path.join(data_dir, "messages.json")
         
         # Criar diretório se não existir
         os.makedirs(data_dir, exist_ok=True)
@@ -21,7 +22,8 @@ class BBSPersistence:
         default_data = {
             self.users_file: [],
             self.channels_file: [],
-            self.logins_file: []
+            self.logins_file: [],
+            self.messages_file: []
         }
         
         for file_path, default_content in default_data.items():
@@ -210,6 +212,49 @@ class BBSPersistence:
         
         print(f"💾 Backup criado em: {backup_path}")
         return backup_path
+    
+    
+    def save_message(self, message_data: Dict[str, Any]):
+        """Salva uma mensagem no histórico"""
+        messages = self._load_json(self.messages_file)
+        
+        message_record = {
+            "id": len(messages) + 1,
+            "type": message_data.get("type", "unknown"),
+            "from": message_data.get("from") or message_data.get("src") or message_data.get("sender"),
+            "to": message_data.get("to") or message_data.get("dst") or message_data.get("channel"),
+            "content": message_data.get("content") or message_data.get("message"),
+            "timestamp": message_data.get("timestamp", datetime.now().isoformat()),
+            "saved_at": datetime.now().isoformat()
+        }
+        
+        messages.append(message_record)
+        self._save_json(self.messages_file, messages)
+        
+        print(f"💾 Mensagem salva: {message_record['from']} -> {message_record['to']}")
+    
+    def get_user_messages(self, username: str, limit: int = 50) -> List[Dict[str, Any]]:
+        """Recupera mensagens de/para um usuário"""
+        messages = self._load_json(self.messages_file)
+        user_messages = [
+            msg for msg in messages 
+            if msg.get("from") == username or msg.get("to") == username
+        ]
+        return user_messages[-limit:]
+    
+    def get_channel_messages(self, channel: str, limit: int = 50) -> List[Dict[str, Any]]:
+        """Recupera mensagens de um canal"""
+        messages = self._load_json(self.messages_file)
+        channel_messages = [
+            msg for msg in messages 
+            if msg.get("to") == channel and msg.get("type") in ["channel", "publish"]
+        ]
+        return channel_messages[-limit:]
+    
+    def get_message_history(self, limit: int = 100) -> List[Dict[str, Any]]:
+        """Recupera histórico geral de mensagens"""
+        messages = self._load_json(self.messages_file)
+        return messages[-limit:]
 
 # Teste da persistência
 if __name__ == "__main__":

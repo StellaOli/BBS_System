@@ -8,6 +8,15 @@ services:
       - 5555:5555
       - 5556:5556
 
+  pubsub-proxy:  
+    build:
+      context: .
+      dockerfile: Dockerfile_broker
+    container_name: pubsub-proxy
+    ports:
+      - "5557:5557"
+      - "5558:5558"
+    command: ["python", "pubsub_proxy.py"]
   servidor:
     build:
       context: .
@@ -17,6 +26,7 @@ services:
       - ./servidor.py:/app/servidor.py
     depends_on:
       - broker
+      - pubsub-proxy
 
   cliente:
     build:
@@ -29,3 +39,21 @@ services:
       - servidor
     volumes:
       - ./cliente.py:/app/cliente.py
+
+  auto-client-1:  
+    build:
+      context: .
+      dockerfile: Dockerfile_auto_client
+    container_name: auto-client-1
+    depends_on:
+      - bbs-server
+    command: ["python", "auto_client.py"]
+
+  auto-client-2: 
+    build:
+      context: .
+      dockerfile: Dockerfile_auto_client
+    container_name: auto-client-2
+    depends_on:
+      - bbs-server
+    command: ["python", "auto_client.py"]
