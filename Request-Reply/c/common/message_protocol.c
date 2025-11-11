@@ -274,3 +274,20 @@ void print_users_list(msgpack_object* root) {
     }
     printf("  📭 Nenhum usuário cadastrado\n");
 }
+
+// ✅ NOVO: Extrair campo clock
+int64_t extract_clock_field(msgpack_object* data) {
+    msgpack_object_map* map = &data->via.map;
+    for (uint32_t i = 0; i < map->size; i++) {
+        msgpack_object_kv* kv = &map->ptr[i];
+        if (kv->key.type == MSGPACK_OBJECT_STR) {
+            char key[32];
+            snprintf(key, sizeof(key), "%.*s", 
+                    kv->key.via.str.size, kv->key.via.str.ptr);
+            if (strcmp(key, "clock") == 0 && kv->val.type == MSGPACK_OBJECT_POSITIVE_INTEGER) {
+                return kv->val.via.u64;
+            }
+        }
+    }
+    return 0;
+}
