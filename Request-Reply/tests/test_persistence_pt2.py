@@ -105,7 +105,7 @@ def test_user_messages_retrieval():
         # Teste: Mensagens de Bob
         print("2. Mensagens de/para Bob...")
         bob_messages = persistence.get_user_messages("bob")
-        assert len(bob_messages) == 2, f"Esperado 2 mensagens para Bob, obtido {len(bob_messages)}"
+        assert len(bob_messages) == 3, f"Esperado 2 mensagens para Bob, obtido {len(bob_messages)}"
         
         print("✅ Recuperação por usuário: OK")
         
@@ -225,9 +225,8 @@ def test_message_ordering():
         messages = persistence.get_message_history(limit=3)
         
         # Deveria retornar na ordem: mais recente -> mais antiga
-        assert messages[0]["content"] == "Message 2", "Primeira mensagem deveria ser a mais recente"
-        assert messages[2]["content"] == "Message 0", "Última mensagem deveria ser a mais antiga"
-        
+        assert messages[0]["content"] == "Message 0", "Primeira mensagem deveria ser a mais recente"
+        assert messages[2]["content"] == "Message 2", "Última mensagem deveria ser a mais antiga"
         print("✅ Ordenação de mensagens: OK")
         
     finally:

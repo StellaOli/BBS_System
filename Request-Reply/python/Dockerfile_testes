@@ -1,0 +1,12 @@
+FROM python:3.9
+
+WORKDIR /app
+
+# Instalar dependências
+RUN pip install pyzmq msgpack-python pytest
+
+# Copiar arquivos do projeto
+COPY . .
+
+# Comando padrão - manter container rodando para executar testes
+CMD ["sleep", "infinity"]

@@ -2,8 +2,8 @@ version: '3.8'
 services:
   reference:
     build:
-      context: .
-      dockerfile: Dockerfile_go_reference
+      context: ./go
+      dockerfile: Dockerfile_reference
     container_name: reference
     ports:
       - "5559:5559"
@@ -12,7 +12,7 @@ services:
 
   broker:
     build:
-      context: .
+      context: ./python
       dockerfile: Dockerfile_broker
     container_name: broker
     ports:
@@ -23,7 +23,7 @@ services:
 
   pubsub-proxy:  
     build:
-      context: .
+      context: ./python
       dockerfile: Dockerfile_broker
     container_name: pubsub-proxy
     ports:
@@ -35,14 +35,12 @@ services:
 
   servidor-1:
     build:
-      context: .
+      context: ./python
       dockerfile: Dockerfile_servidor
     container_name: servidor-1
     hostname: servidor-1
     volumes:
-      - ./servidor.py:/app/servidor.py
-      - ./persistence.py:/app/persistence.py
-      - ./common:/app/common
+      - ./python:/app
     environment:
       - SERVER_NAME=servidor-1
       - REFERENCE_ENDPOINT=tcp://reference:5559
@@ -55,14 +53,12 @@ services:
 
   servidor-2:
     build:
-      context: .
+      context: ./python
       dockerfile: Dockerfile_servidor
     container_name: servidor-2
     hostname: servidor-2
     volumes:
-      - ./servidor.py:/app/servidor.py
-      - ./persistence.py:/app/persistence.py
-      - ./common:/app/common
+      - ./python:/app
     environment:
       - SERVER_NAME=servidor-2
       - REFERENCE_ENDPOINT=tcp://reference:5559
@@ -75,14 +71,12 @@ services:
 
   servidor-3:
     build:
-      context: .
+      context: ./python
       dockerfile: Dockerfile_servidor
     container_name: servidor-3
     hostname: servidor-3
     volumes:
-      - ./servidor.py:/app/servidor.py
-      - ./persistence.py:/app/persistence.py
-      - ./common:/app/common
+      - ./python:/app
     environment:
       - SERVER_NAME=servidor-3
       - REFERENCE_ENDPOINT=tcp://reference:5559
@@ -95,7 +89,7 @@ services:
 
   cliente-c:
     build:
-      context: .
+      context: ./c
       dockerfile: Dockerfile_cliente
     container_name: cliente-c
     stdin_open: true
@@ -105,14 +99,13 @@ services:
       - servidor-2
       - servidor-3
     volumes:
-      - ./client.c:/app/client.c
       - ./common:/app/common
     networks:
       - bbs-network
 
   auto-client-c-1:  
     build:
-      context: .
+      context: ./c
       dockerfile: Dockerfile_autoclient
     container_name: auto-client-c-1
     depends_on:
@@ -120,14 +113,13 @@ services:
       - servidor-2
       - servidor-3
     volumes:
-      - ./auto_client.c:/app/auto_client.c
       - ./common:/app/common
     networks:
       - bbs-network
 
   auto-client-c-2: 
     build:
-      context: .
+      context: ./c
       dockerfile: Dockerfile_autoclient
     container_name: auto-client-c-2
     depends_on:
@@ -135,29 +127,19 @@ services:
       - servidor-2
       - servidor-3
     volumes:
-      - ./auto_client.c:/app/auto_client.c
       - ./common:/app/common
     networks:
       - bbs-network
 
   testes:
     build:
-      context: .
+      context: ./python
       dockerfile: Dockerfile_servidor
     container_name: testes
-    depends_on:
-      - servidor-1
-      - servidor-2
-      - servidor-3
-      - reference
     volumes:
-      - ./servidor.py:/app/servidor.py
-      - ./persistence.py:/app/persistence.py
-      - ./common:/app/common
-      - ./test_persistence_pt1.py:/app/test_persistence_pt1.py
-      - ./test_persistence_pt2.py:/app/test_persistence_pt2.py
-      - ./all_tests.py:/app/all_tests.py
-    command: ["python", "all_tests.py"]
+      - ./python:/app  # Monta a pasta python inteira
+      - ./tests:/app/tests
+    command: sleep infinity
     networks:
       - bbs-network
 

@@ -10,6 +10,10 @@
 #define BROKER_ENDPOINT "tcp://broker:5555"
 #define PUBSUB_ENDPOINT "tcp://pubsub-proxy:5558"
 
+// Incluir protocolo de mensagens
+#include "common/logical_clock.h"
+#include "common/message_protocol.h"
+
 typedef struct {
     void* context;
     void* req_socket;
@@ -20,9 +24,7 @@ typedef struct {
     logical_clock_t clock; // ✅ NOVO: Relógio lógico
 } auto_client_t;
 
-// Incluir protocolo de mensagens
-#include "common/message_protocol.h"
-#include "common/logical_clock.h"
+
 
 // Mensagens pré-definidas para os bots
 const char* MESSAGES[] = {

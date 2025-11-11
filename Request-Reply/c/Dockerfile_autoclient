@@ -7,12 +7,12 @@ RUN apt-get update && apt-get install -y \
     libzmq3-dev \
     libreadline-dev \
     pkg-config \
+    libmsgpack-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Compilar o cliente automático durante o build
-COPY c/auto_client.c .
-COPY c/common/ ./common/
+COPY auto_client.c .
+COPY common/ ./common/
 
-RUN gcc -Wall -g -std=c99 -pthread -o auto_client auto_client.c common/simple_protocol.c -lzmq -lreadline
-
+RUN gcc -Wall -g -std=c99 -pthread -o auto_client auto_client.c common/message_protocol.c common/logical_clock.c -lzmq -lmsgpackc
 CMD ["./auto_client"]
