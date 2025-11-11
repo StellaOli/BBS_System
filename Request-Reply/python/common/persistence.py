@@ -256,27 +256,3 @@ class BBSPersistence:
         messages = self._load_json(self.messages_file)
         return messages[-limit:]
 
-# Teste da persistência
-if __name__ == "__main__":
-    print("🧪 Testando sistema de persistência...")
-    
-    persistence = BBSPersistence("./test_data")
-    
-    # Teste de usuários
-    persistence.add_user("test_user1")
-    persistence.add_user("test_user2")
-    persistence.add_user("test_user1")  # Deve falar
-    
-    persistence.record_login("test_user1")
-    
-    # Teste de canais
-    persistence.add_channel("general")
-    persistence.add_channel("tech")
-    persistence.add_channel("general")  # Deve falar
-    
-    # Listar dados
-    print("Usuários:", persistence.get_all_users())
-    print("Canais:", persistence.get_all_channels())
-    print("Estatísticas:", persistence.get_system_stats())
-    
-    print("✅ Teste de persistência concluído!")

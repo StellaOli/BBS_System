@@ -1,12 +1,13 @@
+version: '3.8'
 services:
   broker:
     build:
       context: .
-      dockerfile: Dockerfile_broker.txt
+      dockerfile: Dockerfile_broker
     container_name: broker
     ports:
-      - 5555:5555
-      - 5556:5556
+      - "5555:5555"
+      - "5556:5556"
 
   pubsub-proxy:  
     build:
@@ -17,43 +18,67 @@ services:
       - "5557:5557"
       - "5558:5558"
     command: ["python", "pubsub_proxy.py"]
+
   servidor:
     build:
       context: .
-      dockerfile: Dockerfile_servidor.txt
+      dockerfile: Dockerfile_servidor
     container_name: servidor
     volumes:
       - ./servidor.py:/app/servidor.py
+      - ./persistence.py:/app/persistence.py
+      - ./common:/app/common
     depends_on:
       - broker
       - pubsub-proxy
 
-  cliente:
+  cliente-c:
     build:
       context: .
-      dockerfile: Dockerfile_cliente.txt
-    container_name: cliente
+      dockerfile: Dockerfile_cliente
+    container_name: cliente-c
     stdin_open: true
     tty: true
     depends_on:
       - servidor
     volumes:
-      - ./cliente.py:/app/cliente.py
+      - ./client.c:/app/client.c
+      - ./common:/app/common
 
-  auto-client-1:  
+  auto-client-c-1:  
     build:
       context: .
-      dockerfile: Dockerfile_auto_client
-    container_name: auto-client-1
+      dockerfile: Dockerfile_autoclient
+    container_name: auto-client-c-1
     depends_on:
-      - bbs-server
-    command: ["python", "auto_client.py"]
+      - servidor
+    volumes:
+      - ./auto_client.c:/app/auto_client.c
+      - ./common:/app/common
 
-  auto-client-2: 
+  auto-client-c-2: 
     build:
       context: .
-      dockerfile: Dockerfile_auto_client
-    container_name: auto-client-2
+      dockerfile: Dockerfile_autoclient
+    container_name: auto-client-c-2
     depends_on:
-      - bbs-server
-    command: ["python", "auto_client.py"]
+      - servidor
+    volumes:
+      - ./auto_client.c:/app/auto_client.c
+      - ./common:/app/common
+
+  testes:
+    build:
+      context: .
+      dockerfile: Dockerfile_servidor
+    container_name: testes
+    depends_on:
+      - servidor
+    volumes:
+      - ./servidor.py:/app/servidor.py
+      - ./persistence.py:/app/persistence.py
+      - ./common:/app/common
+      - ./test_persistence_pt1.py:/app/test_persistence_pt1.py
+      - ./test_persistence_pt2.py:/app/test_persistence_pt2.py
+      - ./all_tests.py:/app/all_tests.py
+    command: ["python", "all_tests.py"]
