@@ -4,6 +4,7 @@
 #include <msgpack.h>
 #include <string.h>
 #include <stdint.h>
+#include <time.h>  // ✅ ADICIONADO: Para time_t, struct tm
 
 // ✅ CORREÇÃO: Todas as funções atualizadas com parâmetro clock
 void create_login_message(const char* username, int64_t clock, msgpack_sbuffer* buffer);
@@ -18,5 +19,7 @@ void extract_string_field(msgpack_object* data, const char* field, char* buffer,
 void extract_service_data(msgpack_object* data, char* status, size_t status_size, char* description, size_t desc_size);
 void print_users_list(msgpack_object* data);
 int64_t extract_clock_field(msgpack_object* data);
+
+
 
 #endif

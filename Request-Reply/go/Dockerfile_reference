@@ -2,17 +2,27 @@ FROM golang:1.21-bookworm
 
 WORKDIR /app
 
+# Instalar dependências do sistema (ZMQ)
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libzmq3-dev \
+    && rm -rf /var/lib/apt/lists/*
+    
 # Copiar código GO
-COPY go/reference/main.go .
-COPY go/common/ ./common/
-COPY go/clock/ ./clock/
+COPY . .
+
+# Criar go.mod se não existir e adicionar dependências
+RUN if [ ! -f "go.mod" ]; then \
+        go mod init reference-server && \
+        go get github.com/pebbe/zmq4 && \
+        go get github.com/vmihailenco/msgpack/v5; \
+    fi
 
 # Inicializar módulo GO e baixar dependências
-RUN go mod init reference-server
-RUN go get github.com/vmihailenco/msgpack/v5
-RUN go get github.com/pebbe/zmq4
+RUN go mod tidy
+
 
 # Compilar
-RUN go build -o reference main.go
+RUN go build -o reference reference/main.go
 
-CMD ["./reference"]
+CMD ["go", "run", "reference/main.go"]

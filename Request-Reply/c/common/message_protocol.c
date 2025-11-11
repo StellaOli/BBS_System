@@ -1,4 +1,10 @@
 #include "message_protocol.h"
+#include <time.h>
+#include <stdio.h>
+#include <string.h>
+
+// ✅ CORREÇÃO: Adicionar includes faltantes
+#include <time.h>
 
 // Timestamp atual em ISO format
 void get_current_timestamp(char* buffer, size_t size) {
@@ -7,15 +13,16 @@ void get_current_timestamp(char* buffer, size_t size) {
     strftime(buffer, size, "%Y-%m-%dT%H:%M:%SZ", tm_info);
 }
 
-// Criar mensagem de login
-void create_login_message(const char* username, msgpack_sbuffer* sbuf) {
+// ✅ CORREÇÃO: Todas as funções atualizadas com parâmetro clock
+void create_login_message(const char* username, int64_t clock, msgpack_sbuffer* sbuf) {
     msgpack_packer pk;
     char timestamp[32];
     
     get_current_timestamp(timestamp, sizeof(timestamp));
+    msgpack_sbuffer_init(sbuf);
     msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
     
-    msgpack_pack_map(&pk, 2);
+    msgpack_pack_map(&pk, 3); // ✅ MUDADO: 3 elementos (service, data, clock)
     
     // service
     msgpack_pack_str(&pk, 7);
@@ -39,17 +46,22 @@ void create_login_message(const char* username, msgpack_sbuffer* sbuf) {
     msgpack_pack_str_body(&pk, "timestamp", 9);
     msgpack_pack_str(&pk, strlen(timestamp));
     msgpack_pack_str_body(&pk, timestamp, strlen(timestamp));
+    
+    // ✅ NOVO: clock
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "clock", 5);
+    msgpack_pack_int64(&pk, clock);
 }
 
-// Criar mensagem de listar usuários
-void create_users_list_message(msgpack_sbuffer* sbuf) {
+void create_users_list_message(int64_t clock, msgpack_sbuffer* sbuf) {
     msgpack_packer pk;
     char timestamp[32];
     
     get_current_timestamp(timestamp, sizeof(timestamp));
+    msgpack_sbuffer_init(sbuf);
     msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
     
-    msgpack_pack_map(&pk, 2);
+    msgpack_pack_map(&pk, 3); // ✅ MUDADO: 3 elementos
     
     msgpack_pack_str(&pk, 7);
     msgpack_pack_str_body(&pk, "service", 7);
@@ -64,17 +76,22 @@ void create_users_list_message(msgpack_sbuffer* sbuf) {
     msgpack_pack_str_body(&pk, "timestamp", 9);
     msgpack_pack_str(&pk, strlen(timestamp));
     msgpack_pack_str_body(&pk, timestamp, strlen(timestamp));
+    
+    // ✅ NOVO: clock
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "clock", 5);
+    msgpack_pack_int64(&pk, clock);
 }
 
-// Criar mensagem de canal
-void create_channel_message(const char* channel_name, msgpack_sbuffer* sbuf) {
+void create_channel_message(const char* channel_name, int64_t clock, msgpack_sbuffer* sbuf) {
     msgpack_packer pk;
     char timestamp[32];
     
     get_current_timestamp(timestamp, sizeof(timestamp));
+    msgpack_sbuffer_init(sbuf);
     msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
     
-    msgpack_pack_map(&pk, 2);
+    msgpack_pack_map(&pk, 3); // ✅ MUDADO: 3 elementos
     
     msgpack_pack_str(&pk, 7);
     msgpack_pack_str_body(&pk, "service", 7);
@@ -94,17 +111,22 @@ void create_channel_message(const char* channel_name, msgpack_sbuffer* sbuf) {
     msgpack_pack_str_body(&pk, "timestamp", 9);
     msgpack_pack_str(&pk, strlen(timestamp));
     msgpack_pack_str_body(&pk, timestamp, strlen(timestamp));
+    
+    // ✅ NOVO: clock
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "clock", 5);
+    msgpack_pack_int64(&pk, clock);
 }
 
-// Criar mensagem de publicação
-void create_publish_message(const char* user, const char* channel, const char* message, msgpack_sbuffer* sbuf) {
+void create_publish_message(const char* user, const char* channel, const char* message, int64_t clock, msgpack_sbuffer* sbuf) {
     msgpack_packer pk;
     char timestamp[32];
     
     get_current_timestamp(timestamp, sizeof(timestamp));
+    msgpack_sbuffer_init(sbuf);
     msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
     
-    msgpack_pack_map(&pk, 2);
+    msgpack_pack_map(&pk, 3); // ✅ MUDADO: 3 elementos
     
     msgpack_pack_str(&pk, 7);
     msgpack_pack_str_body(&pk, "service", 7);
@@ -134,17 +156,22 @@ void create_publish_message(const char* user, const char* channel, const char* m
     msgpack_pack_str_body(&pk, "timestamp", 9);
     msgpack_pack_str(&pk, strlen(timestamp));
     msgpack_pack_str_body(&pk, timestamp, strlen(timestamp));
+    
+    // ✅ NOVO: clock
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "clock", 5);
+    msgpack_pack_int64(&pk, clock);
 }
 
-// Criar mensagem privada
-void create_private_message(const char* src, const char* dst, const char* message, msgpack_sbuffer* sbuf) {
+void create_private_message(const char* src, const char* dst, const char* message, int64_t clock, msgpack_sbuffer* sbuf) {
     msgpack_packer pk;
     char timestamp[32];
     
     get_current_timestamp(timestamp, sizeof(timestamp));
+    msgpack_sbuffer_init(sbuf);
     msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
     
-    msgpack_pack_map(&pk, 2);
+    msgpack_pack_map(&pk, 3); // ✅ MUDADO: 3 elementos
     
     msgpack_pack_str(&pk, 7);
     msgpack_pack_str_body(&pk, "service", 7);
@@ -174,6 +201,11 @@ void create_private_message(const char* src, const char* dst, const char* messag
     msgpack_pack_str_body(&pk, "timestamp", 9);
     msgpack_pack_str(&pk, strlen(timestamp));
     msgpack_pack_str_body(&pk, timestamp, strlen(timestamp));
+    
+    // ✅ NOVO: clock
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "clock", 5);
+    msgpack_pack_int64(&pk, clock);
 }
 
 // Parsear mensagem

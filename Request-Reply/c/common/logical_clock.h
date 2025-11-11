@@ -2,7 +2,6 @@
 #define LOGICAL_CLOCK_H
 
 #include <stdint.h>
-
 typedef struct {
     int64_t clock;
 } logical_clock_t;
