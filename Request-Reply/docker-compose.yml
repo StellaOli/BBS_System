@@ -1,5 +1,15 @@
 version: '3.8'
 services:
+  reference:
+    build:
+      context: .
+      dockerfile: Dockerfile_go_reference
+    container_name: reference
+    ports:
+      - "5559:5559"
+    networks:
+      - bbs-network
+
   broker:
     build:
       context: .
@@ -8,6 +18,8 @@ services:
     ports:
       - "5555:5555"
       - "5556:5556"
+    networks:
+      - bbs-network
 
   pubsub-proxy:  
     build:
@@ -18,19 +30,68 @@ services:
       - "5557:5557"
       - "5558:5558"
     command: ["python", "pubsub_proxy.py"]
+    networks:
+      - bbs-network
 
-  servidor:
+  servidor-1:
     build:
       context: .
       dockerfile: Dockerfile_servidor
-    container_name: servidor
+    container_name: servidor-1
+    hostname: servidor-1
     volumes:
       - ./servidor.py:/app/servidor.py
       - ./persistence.py:/app/persistence.py
       - ./common:/app/common
+    environment:
+      - SERVER_NAME=servidor-1
+      - REFERENCE_ENDPOINT=tcp://reference:5559
     depends_on:
       - broker
       - pubsub-proxy
+      - reference
+    networks:
+      - bbs-network
+
+  servidor-2:
+    build:
+      context: .
+      dockerfile: Dockerfile_servidor
+    container_name: servidor-2
+    hostname: servidor-2
+    volumes:
+      - ./servidor.py:/app/servidor.py
+      - ./persistence.py:/app/persistence.py
+      - ./common:/app/common
+    environment:
+      - SERVER_NAME=servidor-2
+      - REFERENCE_ENDPOINT=tcp://reference:5559
+    depends_on:
+      - broker
+      - pubsub-proxy
+      - reference
+    networks:
+      - bbs-network
+
+  servidor-3:
+    build:
+      context: .
+      dockerfile: Dockerfile_servidor
+    container_name: servidor-3
+    hostname: servidor-3
+    volumes:
+      - ./servidor.py:/app/servidor.py
+      - ./persistence.py:/app/persistence.py
+      - ./common:/app/common
+    environment:
+      - SERVER_NAME=servidor-3
+      - REFERENCE_ENDPOINT=tcp://reference:5559
+    depends_on:
+      - broker
+      - pubsub-proxy
+      - reference
+    networks:
+      - bbs-network
 
   cliente-c:
     build:
@@ -40,10 +101,14 @@ services:
     stdin_open: true
     tty: true
     depends_on:
-      - servidor
+      - servidor-1
+      - servidor-2
+      - servidor-3
     volumes:
       - ./client.c:/app/client.c
       - ./common:/app/common
+    networks:
+      - bbs-network
 
   auto-client-c-1:  
     build:
@@ -51,10 +116,14 @@ services:
       dockerfile: Dockerfile_autoclient
     container_name: auto-client-c-1
     depends_on:
-      - servidor
+      - servidor-1
+      - servidor-2
+      - servidor-3
     volumes:
       - ./auto_client.c:/app/auto_client.c
       - ./common:/app/common
+    networks:
+      - bbs-network
 
   auto-client-c-2: 
     build:
@@ -62,10 +131,14 @@ services:
       dockerfile: Dockerfile_autoclient
     container_name: auto-client-c-2
     depends_on:
-      - servidor
+      - servidor-1
+      - servidor-2
+      - servidor-3
     volumes:
       - ./auto_client.c:/app/auto_client.c
       - ./common:/app/common
+    networks:
+      - bbs-network
 
   testes:
     build:
@@ -73,7 +146,10 @@ services:
       dockerfile: Dockerfile_servidor
     container_name: testes
     depends_on:
-      - servidor
+      - servidor-1
+      - servidor-2
+      - servidor-3
+      - reference
     volumes:
       - ./servidor.py:/app/servidor.py
       - ./persistence.py:/app/persistence.py
@@ -82,3 +158,9 @@ services:
       - ./test_persistence_pt2.py:/app/test_persistence_pt2.py
       - ./all_tests.py:/app/all_tests.py
     command: ["python", "all_tests.py"]
+    networks:
+      - bbs-network
+
+networks:
+  bbs-network:
+    driver: bridge

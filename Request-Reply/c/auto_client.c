@@ -17,10 +17,12 @@ typedef struct {
     char username[32];
     int message_count;
     int running;
+    logical_clock_t clock; // ✅ NOVO: Relógio lógico
 } auto_client_t;
 
 // Incluir protocolo de mensagens
 #include "common/message_protocol.h"
+#include "common/logical_clock.h"
 
 // Mensagens pré-definidas para os bots
 const char* MESSAGES[] = {
@@ -49,6 +51,9 @@ void generate_username(char* buffer, size_t size) {
 
 // Função para enviar requisição usando MessagePack 
 int send_request(auto_client_t* client, msgpack_sbuffer* request, msgpack_sbuffer* response) {
+    // ✅ NOVO: Incrementar relógio antes do envio
+    logical_clock_increment(&client->clock);
+    
     // Enviar mensagem
     int send_result = zmq_send(client->req_socket, request->data, request->size, 0);
     if (send_result == -1) {
@@ -56,7 +61,7 @@ int send_request(auto_client_t* client, msgpack_sbuffer* request, msgpack_sbuffe
         return -1;
     }
 
-    // Receber resposta - usando zmq_recv com buffer
+    // Receber resposta
     char reply_buffer[4096];
     int recv_result = zmq_recv(client->req_socket, reply_buffer, sizeof(reply_buffer) - 1, 0);
     if (recv_result == -1) {
@@ -68,7 +73,16 @@ int send_request(auto_client_t* client, msgpack_sbuffer* request, msgpack_sbuffe
     msgpack_sbuffer_clear(response);
     msgpack_sbuffer_write(response, reply_buffer, recv_result);
     
-    printf("📥 Resposta recebida: %d bytes\n", recv_result);
+    // ✅ NOVO: Atualizar relógio com resposta
+    msgpack_object data;
+    if (parse_message(response->data, response->size, &data) == 0) {
+        int64_t received_clock = extract_clock_field(&data);
+        if (received_clock > 0) {
+            logical_clock_update(&client->clock, received_clock);
+        }
+    }
+    
+    printf("📥 Resposta recebida: %d bytes | ⏰ Clock: %ld\n", recv_result, logical_clock_get(&client->clock));
     return 0;
 }
 
@@ -78,16 +92,15 @@ int bot_login(auto_client_t* client) {
     msgpack_sbuffer_init(&request_buf);
     msgpack_sbuffer_init(&response_buf);
     
-    // ✅ USANDO MESSAGEPACK: Criar mensagem serializada
-    create_login_message(client->username, &request_buf);
-    
+    // ✅ MODIFICADO: Incluir clock na mensagem
+    create_login_message(client->username, logical_clock_get(&client->clock), &request_buf);    
     if (send_request(client, &request_buf, &response_buf) != 0) {
         msgpack_sbuffer_destroy(&request_buf);
         msgpack_sbuffer_destroy(&response_buf);
         return -1;
     }
     
-    // ✅ USANDO MESSAGEPACK: Parsear resposta serializada
+    // Parsear resposta serializada
     msgpack_object data;
     if (parse_message(response_buf.data, response_buf.size, &data) == 0) {
         char status[16] = "";
@@ -96,7 +109,7 @@ int bot_login(auto_client_t* client) {
         extract_service_data(&data, status, sizeof(status), description, sizeof(description));
         
         if (strcmp(status, "sucesso") == 0) {
-            printf("🤖 %s conectado\n", client->username);
+            printf("🤖 %s conectado | ⏰ Clock: %ld\n", client->username, logical_clock_get(&client->clock));
             
             // Inscrever em alguns canais aleatórios
             for (int i = 0; i < 2; i++) {
@@ -126,11 +139,11 @@ void ensure_channels_exist(auto_client_t* client) {
         msgpack_sbuffer_init(&request_buf);
         msgpack_sbuffer_init(&response_buf);
         
-        // ✅ USANDO MESSAGEPACK: Criar mensagem de canal
-        create_channel_message(CHANNELS[i], &request_buf);
+        // ✅ MODIFICADO: Incluir clock na mensagem
+        create_channel_message(CHANNELS[i], logical_clock_get(&client->clock), &request_buf);
         
         if (send_request(client, &request_buf, &response_buf) == 0) {
-            printf("🤖 Canal verificado: %s\n", CHANNELS[i]);
+            printf("🤖 Canal verificado: %s | ⏰ Clock: %ld\n", CHANNELS[i], logical_clock_get(&client->clock));
         }
         
         msgpack_sbuffer_destroy(&request_buf);
@@ -147,14 +160,15 @@ void send_random_message(auto_client_t* client) {
     msgpack_sbuffer_init(&request_buf);
     msgpack_sbuffer_init(&response_buf);
     
-    // ✅ USANDO MESSAGEPACK: Criar mensagem de publicação serializada
-    create_publish_message(client->username, channel, message, &request_buf);
+    // ✅ MODIFICADO: Incluir clock na mensagem
+    create_publish_message(client->username, channel, message, logical_clock_get(&client->clock), &request_buf);
     
     if (send_request(client, &request_buf, &response_buf) == 0) {
-        printf("🤖 %s publicou em #%s: %s\n", client->username, channel, message);
+        printf("🤖 %s publicou em #%s: %s | ⏰ Clock: %ld\n", 
+               client->username, channel, message, logical_clock_get(&client->clock));
         client->message_count++;
         
-        // Mostrar tamanho da mensagem MessagePack (para demonstrar eficiência)
+        // Mostrar tamanho da mensagem MessagePack
         printf("   📦 Tamanho MessagePack: %zu bytes\n", request_buf.size);
     }
     
@@ -167,7 +181,6 @@ void* receive_messages(void* arg) {
     auto_client_t* client = (auto_client_t*)arg;
     
     while (client->running) {
-        // ✅ CORREÇÃO: Usar buffer direto como na função send_request
         char msg_buffer[4096];
         
         // Timeout de 1 segundo
@@ -176,7 +189,10 @@ void* receive_messages(void* arg) {
         
         int recv_result = zmq_recv(client->sub_socket, msg_buffer, sizeof(msg_buffer) - 1, 0);
         if (recv_result != -1) {
-            // ✅ USANDO MESSAGEPACK: Parsear mensagem Pub/Sub serializada
+            // ✅ NOVO: Incrementar relógio ao receber mensagem
+            logical_clock_increment(&client->clock);
+            
+            // Parsear mensagem Pub/Sub serializada
             msgpack_object data;
             if (parse_pubsub_message(msg_buffer, recv_result, &data) == 0) {
                 char sender[32] = "Desconhecido";
@@ -187,14 +203,20 @@ void* receive_messages(void* arg) {
                 extract_string_field(&data, "content", content, sizeof(content));
                 extract_string_field(&data, "target", target, sizeof(target));
                 
+                // ✅ NOVO: Extrair e atualizar clock da mensagem recebida
+                int64_t received_clock = extract_clock_field(&data);
+                if (received_clock > 0) {
+                    logical_clock_update(&client->clock, received_clock);
+                }
+                
                 // Ignorar próprias mensagens
                 if (strcmp(sender, client->username) != 0) {
                     if (strncmp(target, "channel.", 8) == 0) {
-                        printf("🤖 %s recebeu em #%s: %s: %s\n", 
-                               client->username, target + 8, sender, content);
+                        printf("🤖 %s recebeu em #%s: %s: %s | ⏰ Clock: %ld\n", 
+                               client->username, target + 8, sender, content, logical_clock_get(&client->clock));
                     } else {
-                        printf("🤖 %s recebeu privado: %s: %s\n", 
-                               client->username, sender, content);
+                        printf("🤖 %s recebeu privado: %s: %s | ⏰ Clock: %ld\n", 
+                               client->username, sender, content, logical_clock_get(&client->clock));
                     }
                 }
             } else {
@@ -210,6 +232,10 @@ void* receive_messages(void* arg) {
 void run_bot(auto_client_t* client) {
     printf("🚀 Iniciando cliente automático: %s\n", client->username);
     printf("📦 Usando MessagePack para serialização binária\n");
+    printf("⏰ Relógio lógico implementado\n");
+    
+    // ✅ NOVO: Inicializar relógio lógico
+    logical_clock_init(&client->clock);
     
     // Inicializar random seed
     srand(time(NULL) + (int)client->username[4]);
@@ -243,7 +269,7 @@ void run_bot(auto_client_t* client) {
         goto cleanup;
     }
     
-    printf("✅ %s: Conectado ao sistema BBS\n", client->username);
+    printf("✅ %s: Conectado ao sistema BBS | ⏰ Clock: %ld\n", client->username, logical_clock_get(&client->clock));
     
     // Login
     if (bot_login(client) != 0) {
@@ -273,8 +299,8 @@ void run_bot(auto_client_t* client) {
         messages_sent++;
     }
     
-    printf("✅ %s completou %d mensagens. Continuando a ouvir...\n", 
-           client->username, messages_sent);
+    printf("✅ %s completou %d mensagens. Continuando a ouvir... | ⏰ Clock: %ld\n", 
+           client->username, messages_sent, logical_clock_get(&client->clock));
     
     // Manter recebendo mensagens
     while (client->running) {
@@ -298,12 +324,13 @@ cleanup:
         zmq_ctx_destroy(client->context);
     }
     
-    printf("👋 %s finalizado\n", client->username);
+    printf("👋 %s finalizado | ⏰ Clock final: %ld\n", client->username, logical_clock_get(&client->clock));
 }
 
 int main(int argc, char* argv[]) {
     printf("🤖 Iniciando Cliente Automático BBS em C\n");
     printf("📦 Serialização: MessagePack (formato binário)\n");
+    printf("⏰ Parte 4: Relógios Lógicos implementados\n");
     
     auto_client_t client;
     memset(&client, 0, sizeof(client));
