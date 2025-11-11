@@ -1,0 +1,18 @@
+FROM gcc:12-bookworm
+
+WORKDIR /app
+
+# Instalar dependências
+RUN apt-get update && apt-get install -y \
+    libzmq3-dev \
+    libreadline-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Compilar o cliente automático durante o build
+COPY c/auto_client.c .
+COPY c/common/ ./common/
+
+RUN gcc -Wall -g -std=c99 -pthread -o auto_client auto_client.c common/simple_protocol.c -lzmq -lreadline
+
+CMD ["./auto_client"]

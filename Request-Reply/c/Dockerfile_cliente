@@ -1,0 +1,19 @@
+FROM gcc:12-bookworm
+
+WORKDIR /app
+
+# Instalar dependências (incluindo msgpack)
+RUN apt-get update && apt-get install -y \
+    libzmq3-dev \
+    libmsgpack-dev \
+    libreadline-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Compilar o cliente com MessagePack
+COPY c/client.c .
+COPY c/common/ ./common/
+
+RUN gcc -Wall -g -std=c99 -pthread -o client client.c common/message_protocol.c -lzmq -lmsgpackc -lreadline
+
+CMD ["./client"]
