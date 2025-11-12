@@ -349,33 +349,48 @@ print('✅ Sistema operacional')
 
 ## 📁 Estrutura do Projeto
 
-bbs-distribuido/  
-├── c/ — Componentes C  
-│   ├── client.c — Cliente interativo  
-│   ├── auto_client.c — Cliente automatizado  
-│   ├── Dockerfile_cliente — Docker cliente interativo  
-│   └── Dockerfile_autoclient — Docker cliente auto  
-├── python/ — Componentes Python  
-│   ├── servidor.py — Servidor BBS  
-│   ├── broker.py — Broker ZMQ  
-│   ├── pubsub_proxy.py — Proxy Pub/Sub  
-│   ├── persistence.py — Persistência SQLite  
-│   ├── message_protocol.py — Protocolo MessagePack  
-│   └── Dockerfiles — Dockerfiles Python  
-├── go/ — Componentes Go  
-│   ├── main.go — Servidor de referência  
-│   ├── protocol.go — Protocolo comum  
-│   └── Dockerfile_reference — Docker referência  
-├── common/ — Código compartilhado  
-│   ├── logical_clock.h — Relógio lógico (C)  
-│   ├── message_protocol.h — Protocolo (C)  
-│   └── message_protocol.c — Implementação (C)  
-├── tests/ — Testes  
-│   ├── test_integration.py  
-│   ├── test_system.py  
-│   └── test_broker.py  
-└── docker-compose.yml — Orquestração  
-
+Request-Reply/
+├── c/                               # Componentes em C
+│   ├── common/                      # Código compartilhado (headers, libs)
+│   ├── Dockerfile_autoclient        # Dockerfile do cliente automatizado
+│   ├── Dockerfile_cliente           # Dockerfile do cliente interativo
+│   ├── MakeFile                     # Automação de build
+│   ├── auto_client.c                # Cliente automatizado (gera carga)
+│   └── client.c                     # Cliente interativo
+│
+├── go/                              # Componentes em Go
+│   ├── clock/                       # Implementação de relógio lógico
+│   ├── common/                      # Código compartilhado
+│   ├── reference/                   # Servidor de referência em Go
+│   └── Dockerfile_reference         # Dockerfile do servidor de referência
+│
+├── python/                          # Componentes em Python
+│   ├── __pycache__/                 # Cache de bytecode
+│   ├── common/                      # Código utilitário compartilhado
+│   ├── data/                        # Dados persistentes (ex: SQLite)
+│   ├── Dockerfile_broker            # Dockerfile do Broker ZMQ
+│   ├── Dockerfile_servidor          # Dockerfile do servidor Python
+│   ├── Dockerfile_testes            # Dockerfile do ambiente de testes
+│   ├── broker.py                    # Broker ZMQ (Load Balancer)
+│   ├── persistence.py               # Persistência (SQLite)
+│   ├── pubsub_proxy.py              # Proxy PUB/SUB ZMQ
+│   ├── servidor.py                  # Servidor principal BBS
+│   └── tests/                       # Testes de integração e unidade
+│       ├── all_tests.py
+│       ├── test_integration.py
+│       ├── test_persistence_pt1.py
+│       ├── test_persistence_pt2.py
+│       └── test_system.py
+│
+├── teste/  # Scripts e experimentos isolados
+│   ├── Dockerfile_teste      # Dockerfile auxiliar de testes
+│   └── all_tests.py             
+│   ├── test_integration.py
+│   ├── test_persistence_pt1.py
+│   ├── test_persistence_pt2.py
+│   └── test_system.py
+├── docker-compose.yml               # Orquestração dos containers
+└── README.md                        # Documentação principal
 ---
 
 ## 📡 Protocolo de Comunicação
