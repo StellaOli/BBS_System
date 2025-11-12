@@ -348,7 +348,7 @@ print('✅ Sistema operacional')
 ---
 
 ## 📁 Estrutura do Projeto
-
+```
 Request-Reply/
 ├── c/                               # Componentes em C
 │   ├── common/                      # Código compartilhado (headers, libs)
@@ -391,7 +391,7 @@ Request-Reply/
 │   └── test_system.py
 ├── docker-compose.yml               # Orquestração dos containers
 └── README.md                        # Documentação principal
----
+```
 
 ## 📡 Protocolo de Comunicação
 
