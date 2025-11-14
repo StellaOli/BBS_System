@@ -219,37 +219,16 @@ class BBSServer:
                 self.logical_clock.increment()
                 
                 response = self._process_message(message_str)
-                # 🔧 GARANTIR compatibilidade com cliente C
-                if isinstance(response, str):
-                    print("⚠️  ATENÇÃO: Resposta é string, convertendo para bytes")
-                    response = response.encode('utf-8')
-                elif response is None:
-                    print("⚠️  ATENÇÃO: Resposta é None, criando resposta de erro")
-                    response = self.MessageProtocol.create_error_response("Resposta vazia do servidor", self.logical_clock.get())
-                
-                print(f"🔍 DEBUG FINAL - Tipo resposta: {type(response)}, Tamanho: {len(response)}")
-
                 
 
                 print(f"🔍 DEBUG: Enviando resposta")
                 print(f"   Tipo resposta: {type(response)}")
                 print(f"   Tamanho resposta: {len(response)} bytes")
                 print(f"=== 🔍 DEBUG FIM ===\n")
-
-                print(f"🔍 DEBUG ANTES DO SEND:")
-                print(f"   Tipo da resposta: {type(response)}")
-                print(f"   É bytes: {isinstance(response, bytes)}")
-                print(f"   É string: {isinstance(response, str)}")
-                print(f"   Tamanho: {len(response) if response else 0}")
-                
-                # Garantir que é bytes
+                print(f"🔍 DEBUG TIPO RESPOSTA: {type(response)}")
                 if isinstance(response, str):
-                    print("💥 ERRO: Resposta é string! Convertendo...")
+                    print("💥 ERRO: Resposta é string, convertendo para bytes")
                     response = response.encode('utf-8')
-                elif not isinstance(response, bytes):
-                    print("💥 ERRO: Resposta não é bytes! Convertendo...")
-                    response = str(response).encode('utf-8')
-
                 self.rep_socket.send(response)
                 
                 print(f"📤 Resposta enviada: {response}")

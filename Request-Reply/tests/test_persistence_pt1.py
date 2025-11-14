@@ -125,6 +125,7 @@ def test_login_history():
         
         print("✅ Histórico de logins: OK")
         
+        
     finally:
         shutil.rmtree(test_dir)
 
