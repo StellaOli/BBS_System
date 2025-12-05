@@ -1,1 +1,596 @@
-[]
+[
+  {
+    "id": 1,
+    "type": "channel",
+    "from": "bot_6450",
+    "to": "random",
+    "content": "Alguém online?",
+    "timestamp": "2025-12-04T02:19:05.556731",
+    "saved_at": "2025-12-04T02:19:05.556817"
+  },
+  {
+    "id": 2,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "geral",
+    "content": "Funcionamento perfeito!",
+    "timestamp": "2025-12-04T02:19:05.613949",
+    "saved_at": "2025-12-04T02:19:05.614047"
+  },
+  {
+    "id": 3,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "testes",
+    "content": "Mensagem automática",
+    "timestamp": "2025-12-04T02:19:07.616103",
+    "saved_at": "2025-12-04T02:19:07.616175"
+  },
+  {
+    "id": 4,
+    "type": "channel",
+    "from": "stella_corrigido",
+    "to": "novo",
+    "content": "Funciona agora!",
+    "timestamp": "2025-12-04T02:19:08.124932",
+    "saved_at": "2025-12-04T02:19:08.125036"
+  },
+  {
+    "id": 5,
+    "type": "channel",
+    "from": "bot_6450",
+    "to": "tech",
+    "content": "Hello world!",
+    "timestamp": "2025-12-04T02:19:09.561701",
+    "saved_at": "2025-12-04T02:19:09.561845"
+  },
+  {
+    "id": 6,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "geral",
+    "content": "Funcionamento perfeito!",
+    "timestamp": "2025-12-04T02:19:10.619340",
+    "saved_at": "2025-12-04T02:19:10.619520"
+  },
+  {
+    "id": 7,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "testes",
+    "content": "Estou testando o sistema",
+    "timestamp": "2025-12-04T02:19:15.622303",
+    "saved_at": "2025-12-04T02:19:15.622419"
+  },
+  {
+    "id": 8,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "geral",
+    "content": "Alguma novidade?",
+    "timestamp": "2025-12-04T02:19:20.625319",
+    "saved_at": "2025-12-04T02:19:20.625433"
+  },
+  {
+    "id": 9,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "random",
+    "content": "Estou testando o sistema",
+    "timestamp": "2025-12-04T02:19:22.627826",
+    "saved_at": "2025-12-04T02:19:22.628006"
+  },
+  {
+    "id": 10,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "random",
+    "content": "Alguém online?",
+    "timestamp": "2025-12-04T02:19:27.630396",
+    "saved_at": "2025-12-04T02:19:27.630550"
+  },
+  {
+    "id": 11,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "testes",
+    "content": "Hello world!",
+    "timestamp": "2025-12-04T02:19:29.632948",
+    "saved_at": "2025-12-04T02:19:29.633062"
+  },
+  {
+    "id": 12,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "testes",
+    "content": "Funcionamento perfeito!",
+    "timestamp": "2025-12-04T02:19:34.635649",
+    "saved_at": "2025-12-04T02:19:34.635768"
+  },
+  {
+    "id": 13,
+    "type": "channel",
+    "from": "bot_6008",
+    "to": "tech",
+    "content": "Que dia lindo!",
+    "timestamp": "2025-12-04T02:19:36.638236",
+    "saved_at": "2025-12-04T02:19:36.638381"
+  },
+  {
+    "id": 14,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "testes",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T02:27:49.217942",
+    "saved_at": "2025-12-04T02:27:49.218392"
+  },
+  {
+    "id": 15,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "testes",
+    "content": "Estou testando o sistema",
+    "timestamp": "2025-12-04T02:27:49.219733",
+    "saved_at": "2025-12-04T02:27:49.219905"
+  },
+  {
+    "id": 16,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "testes",
+    "content": "Funcionamento perfeito!",
+    "timestamp": "2025-12-04T02:27:52.221884",
+    "saved_at": "2025-12-04T02:27:52.222027"
+  },
+  {
+    "id": 17,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "geral",
+    "content": "Olá pessoal!",
+    "timestamp": "2025-12-04T02:27:53.223255",
+    "saved_at": "2025-12-04T02:27:53.223486"
+  },
+  {
+    "id": 18,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "testes",
+    "content": "Mensagem automática",
+    "timestamp": "2025-12-04T02:27:54.225224",
+    "saved_at": "2025-12-04T02:27:54.225398"
+  },
+  {
+    "id": 19,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "offtopic",
+    "content": "Olá pessoal!",
+    "timestamp": "2025-12-04T02:27:56.225966",
+    "saved_at": "2025-12-04T02:27:56.226213"
+  },
+  {
+    "id": 20,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "random",
+    "content": "Sistema BBS é ótimo!",
+    "timestamp": "2025-12-04T02:27:56.228376",
+    "saved_at": "2025-12-04T02:27:56.228525"
+  },
+  {
+    "id": 21,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "offtopic",
+    "content": "Sistema BBS é ótimo!",
+    "timestamp": "2025-12-04T02:28:01.229276",
+    "saved_at": "2025-12-04T02:28:01.229576"
+  },
+  {
+    "id": 22,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "tech",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T02:28:01.230700",
+    "saved_at": "2025-12-04T02:28:01.230882"
+  },
+  {
+    "id": 23,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "random",
+    "content": "Sistema BBS é ótimo!",
+    "timestamp": "2025-12-04T02:28:04.233911",
+    "saved_at": "2025-12-04T02:28:04.234034"
+  },
+  {
+    "id": 24,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "random",
+    "content": "Olá pessoal!",
+    "timestamp": "2025-12-04T02:28:05.233649",
+    "saved_at": "2025-12-04T02:28:05.233952"
+  },
+  {
+    "id": 25,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "geral",
+    "content": "Sistema BBS é ótimo!",
+    "timestamp": "2025-12-04T02:28:06.236608",
+    "saved_at": "2025-12-04T02:28:06.236816"
+  },
+  {
+    "id": 26,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "tech",
+    "content": "Que dia lindo!",
+    "timestamp": "2025-12-04T02:28:08.237702",
+    "saved_at": "2025-12-04T02:28:08.237958"
+  },
+  {
+    "id": 27,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "offtopic",
+    "content": "Hello world!",
+    "timestamp": "2025-12-04T02:28:08.239859",
+    "saved_at": "2025-12-04T02:28:08.240138"
+  },
+  {
+    "id": 28,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "random",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T02:28:12.242608",
+    "saved_at": "2025-12-04T02:28:12.242787"
+  },
+  {
+    "id": 29,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "geral",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T02:28:13.240773",
+    "saved_at": "2025-12-04T02:28:13.241096"
+  },
+  {
+    "id": 30,
+    "type": "channel",
+    "from": "bot_6200",
+    "to": "random",
+    "content": "Funcionamento perfeito!",
+    "timestamp": "2025-12-04T02:28:16.245355",
+    "saved_at": "2025-12-04T02:28:16.245566"
+  },
+  {
+    "id": 31,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "random",
+    "content": "Alguma novidade?",
+    "timestamp": "2025-12-04T02:28:18.244342",
+    "saved_at": "2025-12-04T02:28:18.244847"
+  },
+  {
+    "id": 32,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "tech",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T02:28:23.249529",
+    "saved_at": "2025-12-04T02:28:23.249824"
+  },
+  {
+    "id": 33,
+    "type": "channel",
+    "from": "bot_0935",
+    "to": "offtopic",
+    "content": "Mensagem automática",
+    "timestamp": "2025-12-04T02:28:26.252930",
+    "saved_at": "2025-12-04T02:28:26.253189"
+  },
+  {
+    "id": 34,
+    "type": "channel",
+    "from": "teste_user",
+    "to": "canal1",
+    "content": "Olá do teste",
+    "timestamp": "2025-12-04T02:29:35.118952",
+    "saved_at": "2025-12-04T02:29:35.119187"
+  },
+  {
+    "id": 35,
+    "type": "channel",
+    "from": "teste_user",
+    "to": "canal1",
+    "content": "Segundo teste",
+    "timestamp": "2025-12-04T02:29:36.123517",
+    "saved_at": "2025-12-04T02:29:36.123761"
+  },
+  {
+    "id": 36,
+    "type": "channel",
+    "from": "teste_user",
+    "to": "canal2",
+    "content": "Mensagem outro canal",
+    "timestamp": "2025-12-04T02:29:37.124414",
+    "saved_at": "2025-12-04T02:29:37.124701"
+  },
+  {
+    "id": 37,
+    "type": "channel",
+    "from": "teste_novo",
+    "to": "tech",
+    "content": "Olá no canal tech",
+    "timestamp": "2025-12-04T02:31:22.650986",
+    "saved_at": "2025-12-04T02:31:22.651252"
+  },
+  {
+    "id": 38,
+    "type": "channel",
+    "from": "teste_novo",
+    "to": "general",
+    "content": "Mensagem geral",
+    "timestamp": "2025-12-04T02:31:23.653663",
+    "saved_at": "2025-12-04T02:31:23.653888"
+  },
+  {
+    "id": 39,
+    "type": "channel",
+    "from": "historico_test",
+    "to": "demo",
+    "content": "Primeira mensagem",
+    "timestamp": "2025-12-04T02:32:43.340918",
+    "saved_at": "2025-12-04T02:32:43.341153"
+  },
+  {
+    "id": 40,
+    "type": "channel",
+    "from": "historico_test",
+    "to": "demo",
+    "content": "Segunda mensagem teste",
+    "timestamp": "2025-12-04T02:32:44.342318",
+    "saved_at": "2025-12-04T02:32:44.342602"
+  },
+  {
+    "id": 41,
+    "type": "channel",
+    "from": "historico_test",
+    "to": "demo",
+    "content": "Terceira!",
+    "timestamp": "2025-12-04T02:32:45.344754",
+    "saved_at": "2025-12-04T02:32:45.345004"
+  },
+  {
+    "id": 42,
+    "type": "channel",
+    "from": "hist_test2",
+    "to": "resultado",
+    "content": "Teste um",
+    "timestamp": "2025-12-04T02:34:41.172558",
+    "saved_at": "2025-12-04T02:34:41.172804"
+  },
+  {
+    "id": 43,
+    "type": "channel",
+    "from": "hist_test2",
+    "to": "resultado",
+    "content": "Teste dois",
+    "timestamp": "2025-12-04T02:34:42.174698",
+    "saved_at": "2025-12-04T02:34:42.174949"
+  },
+  {
+    "id": 44,
+    "type": "channel",
+    "from": "final_test",
+    "to": "final",
+    "content": "Mensagem 1",
+    "timestamp": "2025-12-04T02:38:07.066820",
+    "saved_at": "2025-12-04T02:38:07.067069"
+  },
+  {
+    "id": 45,
+    "type": "channel",
+    "from": "final_test",
+    "to": "final",
+    "content": "Mensagem 2",
+    "timestamp": "2025-12-04T02:38:08.067758",
+    "saved_at": "2025-12-04T02:38:08.068037"
+  },
+  {
+    "id": 46,
+    "type": "channel",
+    "from": "final_test",
+    "to": "final",
+    "content": "Mensagem 3",
+    "timestamp": "2025-12-04T02:38:09.071931",
+    "saved_at": "2025-12-04T02:38:09.072216"
+  },
+  {
+    "id": 47,
+    "type": "channel",
+    "from": "luis",
+    "to": "oi",
+    "content": "oi",
+    "timestamp": "2025-12-04T02:40:07.990522",
+    "saved_at": "2025-12-04T02:40:07.990810"
+  },
+  {
+    "id": 48,
+    "type": "private",
+    "from": "luis",
+    "to": "stella",
+    "content": "oi",
+    "timestamp": "2025-12-04T02:40:18.853029",
+    "saved_at": "2025-12-04T02:40:18.853356"
+  },
+  {
+    "id": 49,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "testes",
+    "content": "Funcionamento perfeito!",
+    "timestamp": "2025-12-04T23:35:34.894381",
+    "saved_at": "2025-12-04T23:35:34.894881"
+  },
+  {
+    "id": 50,
+    "type": "channel",
+    "from": "bot_3915",
+    "to": "offtopic",
+    "content": "Alguém online?",
+    "timestamp": "2025-12-04T23:35:36.894778",
+    "saved_at": "2025-12-04T23:35:36.895078"
+  },
+  {
+    "id": 51,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "testes",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T23:35:38.899765",
+    "saved_at": "2025-12-04T23:35:38.900062"
+  },
+  {
+    "id": 52,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "offtopic",
+    "content": "Mensagem automática",
+    "timestamp": "2025-12-04T23:35:40.905638",
+    "saved_at": "2025-12-04T23:35:40.905855"
+  },
+  {
+    "id": 53,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "testes",
+    "content": "Estou testando o sistema",
+    "timestamp": "2025-12-04T23:35:43.909333",
+    "saved_at": "2025-12-04T23:35:43.909654"
+  },
+  {
+    "id": 54,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "random",
+    "content": "Hello world!",
+    "timestamp": "2025-12-04T23:35:45.913091",
+    "saved_at": "2025-12-04T23:35:45.913346"
+  },
+  {
+    "id": 55,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "random",
+    "content": "Que dia lindo!",
+    "timestamp": "2025-12-04T23:35:50.916776",
+    "saved_at": "2025-12-04T23:35:50.917045"
+  },
+  {
+    "id": 56,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "random",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T23:35:53.920467",
+    "saved_at": "2025-12-04T23:35:53.920737"
+  },
+  {
+    "id": 57,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "testes",
+    "content": "Como vocês estão?",
+    "timestamp": "2025-12-04T23:35:57.923843",
+    "saved_at": "2025-12-04T23:35:57.924214"
+  },
+  {
+    "id": 58,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "offtopic",
+    "content": "Olá pessoal!",
+    "timestamp": "2025-12-04T23:36:01.927625",
+    "saved_at": "2025-12-04T23:36:01.927859"
+  },
+  {
+    "id": 59,
+    "type": "channel",
+    "from": "bot_0287",
+    "to": "geral",
+    "content": "Alguma novidade?",
+    "timestamp": "2025-12-04T23:36:05.931276",
+    "saved_at": "2025-12-04T23:36:05.931517"
+  },
+  {
+    "id": 60,
+    "type": "channel",
+    "from": "bot_1244",
+    "to": "geral",
+    "content": "Mensagem automática",
+    "timestamp": "2025-12-04T23:46:53.199850",
+    "saved_at": "2025-12-04T23:46:53.200339"
+  },
+  {
+    "id": 61,
+    "type": "channel",
+    "from": "bot_1244",
+    "to": "random",
+    "content": "Sistema BBS é ótimo!",
+    "timestamp": "2025-12-04T23:46:57.205152",
+    "saved_at": "2025-12-04T23:46:57.205561"
+  },
+  {
+    "id": 62,
+    "type": "channel",
+    "from": "bot_1244",
+    "to": "offtopic",
+    "content": "Mensagem automática",
+    "timestamp": "2025-12-04T23:47:02.209799",
+    "saved_at": "2025-12-04T23:47:02.210040"
+  },
+  {
+    "id": 63,
+    "type": "channel",
+    "from": "bot_1244",
+    "to": "offtopic",
+    "content": "Olá pessoal!",
+    "timestamp": "2025-12-04T23:47:05.213913",
+    "saved_at": "2025-12-04T23:47:05.214221"
+  },
+  {
+    "id": 64,
+    "type": "channel",
+    "from": "bot_1244",
+    "to": "geral",
+    "content": "Estou testando o sistema",
+    "timestamp": "2025-12-04T23:47:10.217963",
+    "saved_at": "2025-12-04T23:47:10.218252"
+  },
+  {
+    "id": 65,
+    "type": "channel",
+    "from": "bot_1244",
+    "to": "tech",
+    "content": "Que dia lindo!",
+    "timestamp": "2025-12-04T23:47:14.221866",
+    "saved_at": "2025-12-04T23:47:14.222380"
+  },
+  {
+    "id": 66,
+    "type": "private",
+    "from": "renata",
+    "to": "stella",
+    "content": "oi",
+    "timestamp": "2025-12-04T23:50:29.903547",
+    "saved_at": "2025-12-04T23:50:29.903964"
+  }
+]

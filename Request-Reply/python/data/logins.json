@@ -1,1 +1,197 @@
-[]
+[
+  {
+    "username": "bot_9383",
+    "login_time": "2025-12-03T20:56:41.252149",
+    "timestamp": 1764795401.252155
+  },
+  {
+    "username": "bot_4170",
+    "login_time": "2025-12-03T21:01:01.116315",
+    "timestamp": 1764795661.116323
+  },
+  {
+    "username": "bot_0744",
+    "login_time": "2025-12-03T21:03:36.790733",
+    "timestamp": 1764795816.790739
+  },
+  {
+    "username": "bot_7618",
+    "login_time": "2025-12-03T21:04:25.488721",
+    "timestamp": 1764795865.488726
+  },
+  {
+    "username": "bot_1645",
+    "login_time": "2025-12-03T21:05:29.448180",
+    "timestamp": 1764795929.448187
+  },
+  {
+    "username": "bot_5507",
+    "login_time": "2025-12-03T21:05:29.449232",
+    "timestamp": 1764795929.449238
+  },
+  {
+    "username": "bot_8543",
+    "login_time": "2025-12-03T21:07:46.417003",
+    "timestamp": 1764796066.417011
+  },
+  {
+    "username": "bot_0734",
+    "login_time": "2025-12-03T21:07:46.437881",
+    "timestamp": 1764796066.437887
+  },
+  {
+    "username": "testuser",
+    "login_time": "2025-12-03T21:14:24.604210",
+    "timestamp": 1764796464.604215
+  },
+  {
+    "username": "bot_9135",
+    "login_time": "2025-12-03T21:33:40.161733",
+    "timestamp": 1764797620.161739
+  },
+  {
+    "username": "bot_5415",
+    "login_time": "2025-12-03T21:33:40.173001",
+    "timestamp": 1764797620.173027
+  },
+  {
+    "username": "testuser_clean",
+    "login_time": "2025-12-03T21:33:53.061086",
+    "timestamp": 1764797633.061091
+  },
+  {
+    "username": "bot_9078",
+    "login_time": "2025-12-04T01:49:02.867752",
+    "timestamp": 1764812942.867759
+  },
+  {
+    "username": "bot_6420",
+    "login_time": "2025-12-04T01:49:02.869015",
+    "timestamp": 1764812942.869022
+  },
+  {
+    "username": "testuser1",
+    "login_time": "2025-12-04T01:49:15.306818",
+    "timestamp": 1764812955.306824
+  },
+  {
+    "username": "user1",
+    "login_time": "2025-12-04T01:55:37.267685",
+    "timestamp": 1764813337.267691
+  },
+  {
+    "username": "user2",
+    "login_time": "2025-12-04T01:55:38.302200",
+    "timestamp": 1764813338.302206
+  },
+  {
+    "username": "user_teste_1",
+    "login_time": "2025-12-04T01:57:01.916660",
+    "timestamp": 1764813421.916669
+  },
+  {
+    "username": "user_canal",
+    "login_time": "2025-12-04T01:57:03.361811",
+    "timestamp": 1764813423.361817
+  },
+  {
+    "username": "stella",
+    "login_time": "2025-12-04T02:02:21.500274",
+    "timestamp": 1764813741.500279
+  },
+  {
+    "username": "bot_1801",
+    "login_time": "2025-12-04T02:10:05.680149",
+    "timestamp": 1764814205.680155
+  },
+  {
+    "username": "bot_6306",
+    "login_time": "2025-12-04T02:10:05.706991",
+    "timestamp": 1764814205.706998
+  },
+  {
+    "username": "stella_teste",
+    "login_time": "2025-12-04T02:10:26.595397",
+    "timestamp": 1764814226.595402
+  },
+  {
+    "username": "teste_final",
+    "login_time": "2025-12-04T02:17:51.759196",
+    "timestamp": 1764814671.759201
+  },
+  {
+    "username": "bot_6450",
+    "login_time": "2025-12-04T02:19:03.548990",
+    "timestamp": 1764814743.548996
+  },
+  {
+    "username": "bot_6008",
+    "login_time": "2025-12-04T02:19:03.607436",
+    "timestamp": 1764814743.607459
+  },
+  {
+    "username": "stella_corrigido",
+    "login_time": "2025-12-04T02:19:06.780067",
+    "timestamp": 1764814746.780074
+  },
+  {
+    "username": "bot_6200",
+    "login_time": "2025-12-04T02:27:46.208644",
+    "timestamp": 1764815266.208651
+  },
+  {
+    "username": "bot_0935",
+    "login_time": "2025-12-04T02:27:46.212479",
+    "timestamp": 1764815266.212486
+  },
+  {
+    "username": "teste_user",
+    "login_time": "2025-12-04T02:29:31.280028",
+    "timestamp": 1764815371.280034
+  },
+  {
+    "username": "teste_novo",
+    "login_time": "2025-12-04T02:31:18.796759",
+    "timestamp": 1764815478.796764
+  },
+  {
+    "username": "historico_test",
+    "login_time": "2025-12-04T02:32:41.477101",
+    "timestamp": 1764815561.477108
+  },
+  {
+    "username": "hist_test2",
+    "login_time": "2025-12-04T02:34:39.302904",
+    "timestamp": 1764815679.30291
+  },
+  {
+    "username": "final_test",
+    "login_time": "2025-12-04T02:38:05.199919",
+    "timestamp": 1764815885.199924
+  },
+  {
+    "username": "luis",
+    "login_time": "2025-12-04T02:39:10.703231",
+    "timestamp": 1764815950.703237
+  },
+  {
+    "username": "bot_3915",
+    "login_time": "2025-12-04T23:35:31.886928",
+    "timestamp": 1764891331.886934
+  },
+  {
+    "username": "bot_1244",
+    "login_time": "2025-12-04T23:46:48.153336",
+    "timestamp": 1764892008.153342
+  },
+  {
+    "username": "bot_7576",
+    "login_time": "2025-12-04T23:46:48.159851",
+    "timestamp": 1764892008.159858
+  },
+  {
+    "username": "renata",
+    "login_time": "2025-12-04T23:50:17.086274",
+    "timestamp": 1764892217.086283
+  }
+]

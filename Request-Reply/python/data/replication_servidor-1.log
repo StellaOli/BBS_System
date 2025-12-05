@@ -1,0 +1,591 @@
+[
+  {
+    "id": 1,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_9383"
+    },
+    "timestamp": 1764795401.2524638,
+    "created_at": "2025-12-03T20:56:41.252466"
+  },
+  {
+    "id": 2,
+    "server": "servidor-1",
+    "operation": "add_channel",
+    "payload": {
+      "name": "geral"
+    },
+    "timestamp": 1764795401.2562842,
+    "created_at": "2025-12-03T20:56:41.256287"
+  },
+  {
+    "id": 3,
+    "server": "servidor-1",
+    "operation": "add_channel",
+    "payload": {
+      "name": "tech"
+    },
+    "timestamp": 1764795401.25874,
+    "created_at": "2025-12-03T20:56:41.258742"
+  },
+  {
+    "id": 4,
+    "server": "servidor-1",
+    "operation": "add_channel",
+    "payload": {
+      "name": "random"
+    },
+    "timestamp": 1764795401.260673,
+    "created_at": "2025-12-03T20:56:41.260676"
+  },
+  {
+    "id": 5,
+    "server": "servidor-1",
+    "operation": "add_channel",
+    "payload": {
+      "name": "offtopic"
+    },
+    "timestamp": 1764795401.2631211,
+    "created_at": "2025-12-03T20:56:41.263123"
+  },
+  {
+    "id": 6,
+    "server": "servidor-1",
+    "operation": "add_channel",
+    "payload": {
+      "name": "testes"
+    },
+    "timestamp": 1764795401.2650535,
+    "created_at": "2025-12-03T20:56:41.265055"
+  },
+  {
+    "id": 7,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_7618"
+    },
+    "timestamp": 1764795865.488979,
+    "created_at": "2025-12-03T21:04:25.488982"
+  },
+  {
+    "id": 8,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_8543"
+    },
+    "timestamp": 1764796066.417577,
+    "created_at": "2025-12-03T21:07:46.417581"
+  },
+  {
+    "id": 9,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_0734"
+    },
+    "timestamp": 1764796066.4385648,
+    "created_at": "2025-12-03T21:07:46.438568"
+  },
+  {
+    "id": 10,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_9135"
+    },
+    "timestamp": 1764797620.1620908,
+    "created_at": "2025-12-03T21:33:40.162096"
+  },
+  {
+    "id": 11,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_5415"
+    },
+    "timestamp": 1764797620.1734667,
+    "created_at": "2025-12-03T21:33:40.173469"
+  },
+  {
+    "id": 12,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_9078"
+    },
+    "timestamp": 1764812942.8681724,
+    "created_at": "2025-12-04T01:49:02.868176"
+  },
+  {
+    "id": 13,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "user1"
+    },
+    "timestamp": 1764813337.268,
+    "created_at": "2025-12-04T01:55:37.268003"
+  },
+  {
+    "id": 14,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "user_teste_1"
+    },
+    "timestamp": 1764813421.9182956,
+    "created_at": "2025-12-04T01:57:01.918302"
+  },
+  {
+    "id": 15,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "stella"
+    },
+    "timestamp": 1764813741.5010579,
+    "created_at": "2025-12-04T02:02:21.501062"
+  },
+  {
+    "id": 16,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_1801"
+    },
+    "timestamp": 1764814205.6815913,
+    "created_at": "2025-12-04T02:10:05.681595"
+  },
+  {
+    "id": 17,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_6306"
+    },
+    "timestamp": 1764814205.7080467,
+    "created_at": "2025-12-04T02:10:05.708051"
+  },
+  {
+    "id": 18,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "stella_teste"
+    },
+    "timestamp": 1764814226.5959065,
+    "created_at": "2025-12-04T02:10:26.595910"
+  },
+  {
+    "id": 19,
+    "server": "servidor-1",
+    "operation": "add_channel",
+    "payload": {
+      "name": "canal_teste"
+    },
+    "timestamp": 1764814672.6253998,
+    "created_at": "2025-12-04T02:17:52.625404"
+  },
+  {
+    "id": 20,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_6450"
+    },
+    "timestamp": 1764814743.5496402,
+    "created_at": "2025-12-04T02:19:03.549644"
+  },
+  {
+    "id": 21,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_6008"
+    },
+    "timestamp": 1764814743.608028,
+    "created_at": "2025-12-04T02:19:03.608032"
+  },
+  {
+    "id": 22,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6450",
+      "to": "random",
+      "content": "Algu\u00e9m online?"
+    },
+    "timestamp": 1764814745.5593832,
+    "created_at": "2025-12-04T02:19:05.559387"
+  },
+  {
+    "id": 23,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6008",
+      "to": "testes",
+      "content": "Mensagem autom\u00e1tica"
+    },
+    "timestamp": 1764814747.6164794,
+    "created_at": "2025-12-04T02:19:07.616483"
+  },
+  {
+    "id": 24,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6450",
+      "to": "tech",
+      "content": "Hello world!"
+    },
+    "timestamp": 1764814749.562385,
+    "created_at": "2025-12-04T02:19:09.562388"
+  },
+  {
+    "id": 25,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6008",
+      "to": "geral",
+      "content": "Alguma novidade?"
+    },
+    "timestamp": 1764814760.625852,
+    "created_at": "2025-12-04T02:19:20.625856"
+  },
+  {
+    "id": 26,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6008",
+      "to": "testes",
+      "content": "Hello world!"
+    },
+    "timestamp": 1764814769.6336489,
+    "created_at": "2025-12-04T02:19:29.633653"
+  },
+  {
+    "id": 27,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_6200"
+    },
+    "timestamp": 1764815266.210311,
+    "created_at": "2025-12-04T02:27:46.210314"
+  },
+  {
+    "id": 28,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_0935"
+    },
+    "timestamp": 1764815266.2131617,
+    "created_at": "2025-12-04T02:27:46.213164"
+  },
+  {
+    "id": 29,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6200",
+      "to": "testes",
+      "content": "Funcionamento perfeito!"
+    },
+    "timestamp": 1764815272.222702,
+    "created_at": "2025-12-04T02:27:52.222705"
+  },
+  {
+    "id": 30,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_0935",
+      "to": "offtopic",
+      "content": "Ol\u00e1 pessoal!"
+    },
+    "timestamp": 1764815276.2269254,
+    "created_at": "2025-12-04T02:27:56.226930"
+  },
+  {
+    "id": 31,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6200",
+      "to": "tech",
+      "content": "Como voc\u00eas est\u00e3o?"
+    },
+    "timestamp": 1764815281.2316995,
+    "created_at": "2025-12-04T02:28:01.231703"
+  },
+  {
+    "id": 32,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6200",
+      "to": "geral",
+      "content": "Sistema BBS \u00e9 \u00f3timo!"
+    },
+    "timestamp": 1764815286.2376497,
+    "created_at": "2025-12-04T02:28:06.237653"
+  },
+  {
+    "id": 33,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_6200",
+      "to": "random",
+      "content": "Como voc\u00eas est\u00e3o?"
+    },
+    "timestamp": 1764815292.2435448,
+    "created_at": "2025-12-04T02:28:12.243548"
+  },
+  {
+    "id": 34,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_0935",
+      "to": "random",
+      "content": "Alguma novidade?"
+    },
+    "timestamp": 1764815298.246131,
+    "created_at": "2025-12-04T02:28:18.246135"
+  },
+  {
+    "id": 35,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "teste_user"
+    },
+    "timestamp": 1764815371.2806225,
+    "created_at": "2025-12-04T02:29:31.280626"
+  },
+  {
+    "id": 36,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "teste_user",
+      "to": "canal1",
+      "content": "Ol\u00e1 do teste"
+    },
+    "timestamp": 1764815375.1201727,
+    "created_at": "2025-12-04T02:29:35.120176"
+  },
+  {
+    "id": 37,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "teste_novo"
+    },
+    "timestamp": 1764815478.7972322,
+    "created_at": "2025-12-04T02:31:18.797236"
+  },
+  {
+    "id": 38,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "historico_test",
+      "to": "demo",
+      "content": "Primeira mensagem"
+    },
+    "timestamp": 1764815563.3423345,
+    "created_at": "2025-12-04T02:32:43.342337"
+  },
+  {
+    "id": 39,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "hist_test2",
+      "to": "resultado",
+      "content": "Teste um"
+    },
+    "timestamp": 1764815681.173747,
+    "created_at": "2025-12-04T02:34:41.173751"
+  },
+  {
+    "id": 40,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "final_test"
+    },
+    "timestamp": 1764815885.2004385,
+    "created_at": "2025-12-04T02:38:05.200466"
+  },
+  {
+    "id": 41,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "final_test",
+      "to": "final",
+      "content": "Mensagem 2"
+    },
+    "timestamp": 1764815888.0693002,
+    "created_at": "2025-12-04T02:38:08.069304"
+  },
+  {
+    "id": 42,
+    "server": "servidor-1",
+    "operation": "add_channel",
+    "payload": {
+      "name": "oi"
+    },
+    "timestamp": 1764815995.451384,
+    "created_at": "2025-12-04T02:39:55.451389"
+  },
+  {
+    "id": 43,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_3915"
+    },
+    "timestamp": 1764891331.8876219,
+    "created_at": "2025-12-04T23:35:31.887626"
+  },
+  {
+    "id": 44,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_0287",
+      "to": "testes",
+      "content": "Funcionamento perfeito!"
+    },
+    "timestamp": 1764891334.896902,
+    "created_at": "2025-12-04T23:35:34.896906"
+  },
+  {
+    "id": 45,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_3915",
+      "to": "tech",
+      "content": "Alguma novidade?"
+    },
+    "timestamp": 1764891338.901628,
+    "created_at": "2025-12-04T23:35:38.901632"
+  },
+  {
+    "id": 46,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_0287",
+      "to": "random",
+      "content": "Hello world!"
+    },
+    "timestamp": 1764891345.9144475,
+    "created_at": "2025-12-04T23:35:45.914451"
+  },
+  {
+    "id": 47,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_0287",
+      "to": "testes",
+      "content": "Como voc\u00eas est\u00e3o?"
+    },
+    "timestamp": 1764891357.9253793,
+    "created_at": "2025-12-04T23:35:57.925383"
+  },
+  {
+    "id": 48,
+    "server": "servidor-1",
+    "operation": "add_user",
+    "payload": {
+      "username": "bot_7576"
+    },
+    "timestamp": 1764892008.1606681,
+    "created_at": "2025-12-04T23:46:48.160673"
+  },
+  {
+    "id": 49,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_1244",
+      "to": "geral",
+      "content": "Mensagem autom\u00e1tica"
+    },
+    "timestamp": 1764892013.2020893,
+    "created_at": "2025-12-04T23:46:53.202093"
+  },
+  {
+    "id": 50,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_1244",
+      "to": "offtopic",
+      "content": "Mensagem autom\u00e1tica"
+    },
+    "timestamp": 1764892022.2112744,
+    "created_at": "2025-12-04T23:47:02.211279"
+  },
+  {
+    "id": 51,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "channel",
+      "from": "bot_1244",
+      "to": "tech",
+      "content": "Que dia lindo!"
+    },
+    "timestamp": 1764892034.2243195,
+    "created_at": "2025-12-04T23:47:14.224323"
+  },
+  {
+    "id": 52,
+    "server": "servidor-1",
+    "operation": "save_message",
+    "payload": {
+      "type": "private",
+      "from": "renata",
+      "to": "stella",
+      "content": "oi"
+    },
+    "timestamp": 1764892229.9061244,
+    "created_at": "2025-12-04T23:50:29.906128"
+  }
+]

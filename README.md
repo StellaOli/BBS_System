@@ -1,536 +1,377 @@
-# 🚀 Sistema BBS Distribuído com Relógios Lógicos
+🔐 LOGIN NECESSÁRIO
+1. Login
+0. Sair
 
-Um sistema de Bulletin Board System (BBS) distribuído implementado em múltiplas linguagens (C, Python, Go) com sincronização de relógios lógicos e arquitetura tolerante a falhas.
+➤ Escolha uma opção: 1
+Nome de usuário: alice
 
-## 📋 Índice
+🔐 Tentando login como 'alice'...
+✅ Login realizado com sucesso!
+   👤 Usuário: alice
+   ⏰ Clock lógico: 1
 
-- [Visão Geral](#visão-geral)
-- [Arquitetura do Sistema](#arquitetura-do-sistema)
-- [Componentes](#componentes)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação e Execução](#instalação-e-execução)
-- [Guia de Comandos](#guia-de-comandos)
-- [Testes](#testes)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Protocolo de Comunicação](#protocolo-de-comunicação)
-- [Monitoramento](#monitoramento)
-- [Desenvolvimento](#desenvolvimento)
-- [Solução de Problemas](#solução-de-problemas)
+👤 alice (Clock: 1)
+📋 USUÁRIOS E CANAIS:
+1. Listar usuários
+2. Listar canais
+3. Criar canal
+4. Inscrever em canal
+...
 
-## 🎯 Visão Geral
+➤ Escolha uma opção: 2
+📢 Solicitando lista de canais...
+✅ Canais disponíveis: 4
+   📌 general
+   📌 announcements
+   📌 dev
+   📌 random
 
-Este projeto implementa um sistema BBS distribuído com as seguintes características:
+➤ Escolha uma opção: 5
+Nome do canal: general
+Mensagem: Olá a todos!
 
-- **Arquitetura Distribuída**: Múltiplos servidores balanceando carga
-- **Comunicação Assíncrona**: Usando ZeroMQ e MessagePack
-- **Relógios Lógicos**: Implementação do algoritmo de Lamport
-- **Tolerância a Falhas**: Mecanismos de eleição de coordenador
-- **Pub/Sub**: Sistema de mensagens em tempo real
-- **Multi-linguagem**: Componentes em C, Python e Go
+📤 Publicando no canal 'general'...
+✅ Mensagem publicada no canal 'general'
+```
 
-## 🏗️ Arquitetura do Sistema
-````
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Cliente   │    │ Auto-Client │    │ Auto-Client │
-│     C       │    │     C-1     │    │     C-2     │
-└──────┬──────┘    └──────┬──────┘    └──────┬──────┘
-       │                  │                  │
-       └──────────────────┼──────────────────┘
-                          │
-┌─────────────────────────────────────────────────┐
-│                   BROKER ZMQ                    │
-│              (Load Balancer)                    │
-└─────────────────────────────────────────────────┘
-       │                  │                  │
-┌──────┴──────┐    ┌──────┴──────┐    ┌──────┴──────┐
-│  Servidor   │    │  Servidor   │    │  Servidor   │
-│   Python 1  │    │   Python 2  │    │   Python 3  │
-└──────┬──────┘    └──────┬──────┘    └──────┬──────┘
-       │                  │                  │
-       └──────────────────┼──────────────────┘
-                          │
-┌─────────────────────────────────────────────────┐
-│              PROXY PUB/SUB ZMQ                  │
-└─────────────────────────────────────────────────┘
-       │                  │                  │
-┌──────┴──────┐    ┌──────┴───────┐   ┌──────┴──────┐
-│ Referência  │    │ Persistência │   │   Testes    │
-│    Go       │    │   SQLite     │   │   Python    │
-└─────────────┘    └──────────────┘   └─────────────┘
-````
-## ⚙️ Componentes
+### 4. Monitorar Bots Automáticos
 
-### 🖥️ Servidores Python (`servidor-1`, `servidor-2`, `servidor-3`)
-- Processam requisições dos clientes
-- Gerenciam usuários, canais e mensagens
-- Implementam relógios lógicos
-- Participam da eleição de coordenador
-
-### 🔄 Broker ZMQ (`broker`)
-- Balanceador de carga entre clientes e servidores
-- Roteia mensagens usando padrão ROUTER/DEALER
-- Porta 5555 (clientes) e 5556 (servidores)
-
-### 📡 Proxy Pub/Sub (`pubsub-proxy`)
-- Gerencia sistema de publicação/assinatura
-- Distribui mensagens em tempo real
-- Porta 5557 (publicação) e 5558 (assinatura)
-
-### ⏰ Servidor de Referência Go (`reference`)
-- Servidor de relógio lógico central
-- Coordena sincronização entre servidores
-- Gerencia ranks dos servidores
-- Porta 5559
-
-### 👤 Cliente C Interativo (`cliente-c`)
-- Cliente interativo com interface de linha de comando
-- Suporte a comandos em tempo real
-- Implementa relógio lógico do lado do cliente
-
-### 🤖 Auto-Clients C (`auto-client-c-1`, `auto-client-c-2`)
-- Clientes automatizados para testes de carga
-- Simulam comportamento de usuários reais
-- Geram tráfego automático de mensagens
-
-### 🧪 Ambiente de Testes (`testes`)
-- Testes de integração e sistema
-- Verificação da arquitetura distribuída
-- Testes de carga e resiliência
-
-## 📋 Pré-requisitos
-
-- **Docker** e **Docker Compose**
-- 4GB+ de RAM disponível
-- Linux/macOS/Windows com WSL2
-
-## 🚀 Instalação e Execução
-
-### 1. Clone o repositório
 ```bash
-git clone https://github.com/StellaOli/BBS_System.git
-cd BBS_System
+# Ver logs dos bots
+docker-compose logs auto-client-py-1 auto-client-py-2 -f
+
+# Ver logs dos servidores (incluindo replicação)
+docker-compose logs servidor-1 servidor-2 servidor-3 -f
 ```
 
-### 2. Execute o sistema completo
+### 5. Verificar Persistência de Dados
+
 ```bash
-# Iniciar todos os serviços:
-docker-compose up -d  
+# Os dados são armazenados em JSON em /Request-Reply/python/data/
+ls -la python/data/
 
-# Verificar status:
-docker-compose ps  
+# Ver usuários cadastrados
+cat python/data/users.json
 
-# Ver logs em tempo real:
-docker-compose logs -f
+# Ver canais criados
+cat python/data/channels.json
+
+# Ver histórico de logins
+cat python/data/logins.json
+
+# Ver histórico de mensagens
+cat python/data/messages.json
 ```
-### 3. Aguarde a inicialização
+
+### 6. Parar o Sistema
+
 ```bash
-# Aguarde todos os serviços ficarem healthy (≈30 segundos):
-watch -n 5 'docker-compose ps'
+# Parar todos os containers
+docker-compose stop
+
+# Remover containers e volumes
+docker-compose down -v
+
+# Ver status
+docker-compose ps
 ```
 
-### 4. Acesse o cliente interativo
+## 📊 Testando o Sistema
+
+### Executar Testes Unitários
+
 ```bash
-docker exec -it cliente-c ./client
-```
----
+# Entrar no container de testes
+docker-compose exec testes bash
 
-## ⌨️ Guia de Comandos
+# Executar todos os testes
+pytest -v tests/
 
-### 🧍‍♂️ Comandos do Cliente Interativo
+# Executar teste específico
+pytest -v tests/test_integration.py
 
-**login <nome>**  
-Função: Autentica um usuário no sistema  
-Exemplo:
-```bash
-[desconectado | ⏰1]> login alice  
-✅ Login realizado com sucesso | ⏰ Clock: 3
+# Com cobertura de código
+pytest --cov=. tests/
 ```
 
-**help**  
-Função: Mostra todos os comandos disponíveis  
-Exemplo:
-```bash
-[alice | ⏰5]> help  
-📋 Comandos disponíveis:  
-- login <nome> - Fazer login com nome de usuário  
-- users - Listar todos os usuários  
-- channel <nome> - Criar um novo canal  
-- channels - Listar todos os canais  
-- pub <canal> <msg> - Publicar mensagem em canal  
-- msg <user> <msg> - Enviar mensagem privada  
-- sub <canal> - Inscrever em canal  
-- unsub <canal> - Cancelar inscrição  
-- history - Histórico de mensagens  
-- clock - Mostrar relógio lógico atual  
-- help - Mostrar esta ajuda  
-- quit - Sair do programa  
-```
-**quit ou exit**  
-Função: Encerra o cliente  
-Exemplo:  
-```bash
-[alice | ⏰15]> quit  
-👋 Até logo! | ⏰ Clock final: 15  
-```
+### Testes Disponíveis
 
----
+- `test_logical_clock.py` - Testa relógio lógico
+- `test_persistence_pt1.py` - Testa persistência de usuários/canais
+- `test_persistence_pt2.py` - Testa persistência de mensagens
+- `test_berkeley_sync.py` - Testa sincronização Berkeley
+- `test_reference_service.py` - Testa Reference Server
+- `test_integration.py` - Teste de integração completo
+- `test_system.py` - Teste de todo o sistema
 
-### 👥 Comandos de Gerenciamento de Usuários
+## 🔧 Implementações por Parte
 
-**users**  
-Função: Lista todos os usuários cadastrados no sistema  
-Exemplo:  
-```bash
-[alice | ⏰7]> users  
-👥 Usuários cadastrados | ⏰ Clock: 8  
-- alice  
-- bob  
-- carol  
-```
+### Parte 1: Request-Reply
 
----
+**Funcionalidades:**
+- ✅ Login de usuários (sem senha)
+- ✅ Listagem de usuários
+- ✅ Criação de canais
+- ✅ Listagem de canais
+- ✅ Persistência em JSON (users.json, channels.json, logins.json)
 
-### 📢 Comandos de Canais
-
-**channel <nome>**  
-Função: Cria um novo canal de comunicação  
-Exemplo:  
-```bash
-[alice | ⏰9]> channel geral  
-✅ Canal 'geral' criado com sucesso | ⏰ Clock: 11  
-```
-
-**channels**  
-Função: Lista todos os canais disponíveis  
-Exemplo:  
-```bash
-[alice | ⏰12]> channels  
-📢 Canais disponíveis | ⏰ Clock: 13  
-- geral  
-- tech  
-- random  
-```
-
-**sub <canal>**  
-Função: Inscreve o usuário em um canal  
-Exemplo:  
-```bash
-[alice | ⏰14]> sub tech  
-✅ Inscrito no tópico: channel.tech | ⏰ Clock: 15  
-```
-
-**unsub <canal>**  
-Função: Cancela a inscrição em um canal  
-Exemplo:  
-```bash
-[alice | ⏰20]> unsub tech  
-✅ Inscrição cancelada do tópico: channel.tech | ⏰ Clock: 21  
-```
----
-
-### 💬 Comandos de Mensagens
-
-**pub <canal> <mensagem>**  
-Função: Publica uma mensagem em um canal  
-Exemplo:  
-```bash
-[alice | ⏰16]> pub tech Olá pessoal da tecnologia!  
-✅ Mensagem publicada com sucesso | ⏰ Clock: 18  
-Usuários inscritos recebem: 📢 [tech] alice: Olá pessoal da tecnologia!
-```
-
-**msg <usuário> <mensagem>**  
-Função: Envia uma mensagem privada para outro usuário  
-Exemplo:  
-```bash
-[alice | ⏰22]> msg bob Ei, tudo bem?  
-✅ Mensagem enviada com sucesso | ⏰ Clock: 24  
-Destinatário recebe: 📩 [PRIVADO] alice: Ei, tudo bem?  
-```
----
-
-### ⚙️ Comandos do Sistema
-
-**clock**  
-Função: Mostra o valor atual do relógio lógico  
-Exemplo: 
-```bash
-[alice | ⏰25]> clock  
-⏰ Relógio lógico atual: 25  
-```
-
-**history**  
-Função: Exibe o histórico de mensagens (em desenvolvimento)  
-Exemplo:  
-```bash
-[alice | ⏰26]> history  
-📢 Funcionalidade em desenvolvimento | ⏰ Clock: 27  
-```
-
----
-
-## 💻 Uso do Sistema
-
-Sessão Completa de Exemplo:
-```bash
-[desconectado | ⏰1]> login carol  
-✅ Login realizado com sucesso | ⏰ Clock: 3  
-
-[carol | ⏰4]> users  
-👥 Usuários cadastrados | ⏰ Clock: 5  
-- alice  
-- bob  
-- carol  
-
-[carol | ⏰6]> channel musica  
-✅ Canal 'musica' criado com sucesso | ⏰ Clock: 8  
-
-[carol | ⏰9]> sub geral  
-✅ Inscrito no tópico: channel.geral | ⏰ Clock: 10  
-
-[carol | ⏰11]> pub geral Olá a todos!  
-✅ Mensagem publicada com sucesso | ⏰ Clock: 13  
-
-📢 [geral] bob: Bem-vinda Carol! | ⏰ Clock: 15  
-
-[carol | ⏰16]> msg bob Obrigada! | ⏰ Clock: 18  
-
-[carol | ⏰19]> quit  
-👋 Até logo! | ⏰ Clock final: 19  
-
-```
-
----
-
-## 📊 Monitoramento do Sistema
-```bash
-
-# Ver logs específicos:
-- docker logs broker  
-- docker logs servidor-1  
-- docker logs reference  
-
-# Estatísticas do sistema:
-docker exec servidor-1 python -c "  
-from persistence import BBSPersistence  
-p = BBSPersistence()  
-print(p.get_system_stats())  
-"
-```
-
----
-
-## 🧪 Testes
-
-**Testes de Integração**
-```bash
-- docker exec testes python tests/test_integration.py  
-- docker exec testes python tests/test_system.py  
-
-# Teste específico do broker
-- docker exec testes python tests/test_broker.py  
-
-# Testes de Carga
-- docker logs auto-client-c-1  
-- docker logs auto-client-c-2  
-
-# Testes Manuais
-docker exec testes python -c "  
-import zmq  
-context = zmq.Context()  
-socket = context.socket(zmq.REQ)  
-socket.connect('tcp://broker:5555')  
-socket.send_string('PING')  
-print('✅ Sistema operacional')  
-"
-```
-
----
-
-## 📁 Estrutura do Projeto
-```
-Request-Reply/
-├── c/                               # Componentes em C
-│   ├── common/                      # Código compartilhado (headers, libs)
-│   ├── Dockerfile_autoclient        # Dockerfile do cliente automatizado
-│   ├── Dockerfile_cliente           # Dockerfile do cliente interativo
-│   ├── MakeFile                     # Automação de build
-│   ├── auto_client.c                # Cliente automatizado (gera carga)
-│   └── client.c                     # Cliente interativo
-│
-├── go/                              # Componentes em Go
-│   ├── clock/                       # Implementação de relógio lógico
-│   ├── common/                      # Código compartilhado
-│   ├── reference/                   # Servidor de referência em Go
-│   └── Dockerfile_reference         # Dockerfile do servidor de referência
-│
-├── python/                          # Componentes em Python
-│   ├── __pycache__/                 # Cache de bytecode
-│   ├── common/                      # Código utilitário compartilhado
-│   ├── data/                        # Dados persistentes (ex: SQLite)
-│   ├── Dockerfile_broker            # Dockerfile do Broker ZMQ
-│   ├── Dockerfile_servidor          # Dockerfile do servidor Python
-│   ├── Dockerfile_testes            # Dockerfile do ambiente de testes
-│   ├── broker.py                    # Broker ZMQ (Load Balancer)
-│   ├── persistence.py               # Persistência (SQLite)
-│   ├── pubsub_proxy.py              # Proxy PUB/SUB ZMQ
-│   ├── servidor.py                  # Servidor principal BBS
-│   └── tests/                       # Testes de integração e unidade
-│       ├── all_tests.py
-│       ├── test_integration.py
-│       ├── test_persistence_pt1.py
-│       ├── test_persistence_pt2.py
-│       └── test_system.py
-│
-├── teste/  # Scripts e experimentos isolados
-│   ├── Dockerfile_teste      # Dockerfile auxiliar de testes
-│   └── all_tests.py             
-│   ├── test_integration.py
-│   ├── test_persistence_pt1.py
-│   ├── test_persistence_pt2.py
-│   └── test_system.py
-├── docker-compose.yml               # Orquestração dos containers
-└── README.md                        # Documentação principal
-```
-
-## 📡 Protocolo de Comunicação
-
-**MessagePack**  
-Todos os componentes usam MessagePack para serialização binária eficiente:
-```bash
-# Estrutura da mensagem:
-{  
-  "service": "login|publish|message|users|channel...",  
-  "data": { ... },  
-  "timestamp": "ISO-8601",  
-  "clock": 123  
+**Formatos de Mensagem (MessagePack):**
+```python
+# Login Request
+{
+    "service": "login",
+    "data": {
+        "user": "alice",
+        "clock": 1
+    }
 }
 
+# Login Response
+{
+    "service": "login",
+    "data": {
+        "status": "success",
+        "description": "Login realizado com sucesso"
+    },
+    "clock": 2
+}
 ```
 
-**Relógios Lógicos**  
-Implementação do algoritmo de Lamport:
-- Incremento local antes de enviar mensagens  
-- Atualização ao receber mensagens: clock = max(local, recebido) + 1  
-- Sincronização via servidor de referência  
+### Parte 2: Pub/Sub
 
-Fluxo do Relógio Lógico:
-- login: +2 incrementos (envio + recebimento)  
-- pub/msg: +2 incrementos (envio + confirmação)  
-- sub/unsub: +1 incremento (ação local)  
-- Receber mensagem: +1 incremento + atualização  
+**Funcionalidades:**
+- ✅ Publicação em canais (XPUB/XSUB)
+- ✅ Mensagens privadas entre usuários
+- ✅ Inscrição em tópicos
+- ✅ Cliente automático (bots) com publicação contínua
+- ✅ Persistência de mensagens (messages.json)
 
----
+**Formatos de Mensagem:**
+```python
+# Publicar em canal
+{
+    "service": "publish",
+    "data": {
+        "user": "alice",
+        "channel": "general",
+        "message": "Olá!"
+    }
+}
 
-## 📊 Monitoramento
-
-Comandos úteis:
-```bash
-
-- docker-compose ps  
-- watch -n 5 'docker stats --no-stream'  
-- docker-compose logs --tail=50  
-- docker network inspect bbs-distribuido_bbs-network  
+# Mensagem privada
+{
+    "service": "message",
+    "data": {
+        "src": "alice",
+        "dst": "bob",
+        "message": "Oi Bob!"
+    }
+}
 ```
 
-Métricas do sistema:
-- Usuários ativos: Persistidos em SQLite  
-- Mensagens trocadas: Histórico completo  
-- Relógios lógicos: Sincronizados entre componentes  
-- Performance: Latência via timestamps  
+### Parte 3: MessagePack
 
----
+**Implementação:**
+- ✅ Serialização binária com MessagePack (msgpack)
+- ✅ Compatibilidade com Go e C
+- ✅ Redução de tamanho de mensagens
+- ✅ Suporte a int64 para timestamps e clocks
 
-## 🛠️ Desenvolvimento
+**Exemplo:**
+```python
+import msgpack
 
-**Adicionar Novo Serviço**
-1. Adicione Dockerfile na pasta correspondente  
-2. Atualize docker-compose.yml  
-3. Implemente protocolo MessagePack  
-4. Adicione testes de integração  
+# Serializar
+data = {"service": "login", "data": {"user": "alice"}, "clock": 1}
+binary = msgpack.packb(data)
 
-**Debugging**
-```bash
-# Shell em qualquer container
-docker exec -it servidor-1 sh
-
-# Logs detalhados com debug
-docker-compose down
-DEBUG=1 docker-compose up
-
-# Teste de conectividade
-docker run --rm --network bbs-distribuido_bbs-network \
-  appropriate/curl curl http://broker:5555
+# Desserializar
+original = msgpack.unpackb(binary)
 ```
 
----
+### Parte 4: Relógios e Sincronização
 
-## 🐛 Solução de Problemas
+**Componentes:**
+- ✅ Relógio Lógico em todos os processos
+- ✅ Reference Server (Go) - gerencia ranks e sincronização
+- ✅ Heartbeat periódico (30s)
+- ✅ Eleição de Coordenador (algoritmo Bully)
+- ✅ Sincronização Berkeley (a cada 10 mensagens)
 
-**Problemas Comuns**
-
-Container não inicia:  
-```bash
-docker-compose down  
-docker system prune -f  
-docker-compose up -d  
+**Relógio Lógico:**
+```python
+class LogicalClock:
+    def __init__(self):
+        self.clock = 1
+    
+    def increment(self):
+        self.clock += 1
+        return self.clock
+    
+    def update(self, received_clock):
+        self.clock = max(self.clock, received_clock) + 1
+        return self.clock
 ```
 
-Timeout nas conexões:  
-Verifique `docker logs broker`  
-Aumente timeouts nos clientes  
+**Serviços Reference Server:**
 
-Relógios não sincronizam:  
-Verifique `docker logs reference`  
-Confirme conectividade de rede  
+| Serviço | Descrição | Request | Response |
+|---------|-----------|---------|----------|
+| rank | Obter rank do servidor | {user: nome} | {rank: número} |
+| list | Listar servidores | {} | {list: [...]} |
+| heartbeat | Enviar heartbeat | {user: nome} | {status: OK} |
+| clock | Sincronizar relógio | {} | {time: unix_time} |
+| election | Requisição de eleição | {} | {election: OK} |
 
-Mensagens não entregues:  
-Verifique `docker logs pubsub-proxy`  
-Confirme inscrições nos tópicos  
+### Parte 5: Replicação de Dados
 
-**Comandos de Diagnóstico**
-```bash
-# 1. Verificar se todos containers estão rodando
-docker ps
+**Estratégia Implementada: Write-All, Read-Any**
 
-# 2. Testar conectividade de rede
-docker exec -it cliente-c ping broker
-docker exec -it servidor-1 ping broker
+- ✅ Todos os servidores replicam todos os dados
+- ✅ Consistência eventual garantida
+- ✅ Cada servidor copia dados dos outros via pull periódico
+- ✅ Sincronização após cada operação de escrita
 
-# 3. Verificar logs em tempo real
-docker logs -f broker
-
-# 4. Testar cliente manualmente
-docker exec -it cliente-c ./client
-
-# 5. Verificar se há erros nos servidores
-docker logs servidor-1
-docker logs servidor-2
+**Protocolo de Replicação:**
+```python
+# Cada servidor notifica os outros após escrever
+{
+    "service": "replicate",
+    "data": {
+        "operation": "add_user",
+        "payload": {...},
+        "timestamp": unix_time
+    },
+    "clock": valor_clock
+}
 ```
+
+**Garantias:**
+- Durabilidade: Todos os dados persistem em disco (JSON)
+- Consistência: Todos os servidores têm mesmos dados
+- Disponibilidade: Sistema continua mesmo com 1 servidor down
+
+## 📈 Monitoramento
+
+### Ver Status do Sistema
+
 ```bash
-# Reconstruir tudo
-docker-compose down
+# Verificar se todos os containers estão rodando
+docker-compose ps
+
+# Ver recursos utilizados
+docker stats
+
+# Inspecionar um container específico
+docker inspect servidor-1
+
+# Ver histórico de eventos
+docker events --filter 'container=servidor-1'
+```
+
+### Logs Importantes
+
+```bash
+# Reference Server
+docker-compose logs reference
+
+# Broker
+docker-compose logs broker
+
+# Servidor específico
+docker-compose logs servidor-1
+
+# Cliente automático
+docker-compose logs auto-client-py-1
+
+# Seguir logs em tempo real
+docker-compose logs -f
+```
+
+## 🐛 Troubleshooting
+
+### Problema: Containers não iniciam
+
+```bash
+# Ver erro
+docker-compose logs
+
+# Reconstruir imagens
 docker-compose build --no-cache
+
+# Limpar e reiniciar
+docker-compose down -v
 docker-compose up -d
-
-# Aguardar inicialização
-sleep 30
-
-# Testar novamente
-docker exec -it cliente-c ./client
 ```
 
----
+### Problema: Conexão recusada
 
-Desenvolvido como projeto acadêmico de **Sistemas Distribuídos 🎓**  
-Arquitetura distribuída • Relógios lógicos • Tolerância a falhas • Mensageria em tempo real  
+```bash
+# Verificar se porta está em uso
+lsof -i :5555
 
----
+# Ver rede do Docker
+docker network inspect bbs-network
 
-Fork o projeto  
-Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)  
-Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)  
-Push para a branch (`git push origin feature/AmazingFeature`)  
-Abra um Pull Request  
+# Testar conexão entre containers
+docker-compose exec broker nc -zv servidor-1 5556
+```
+
+### Problema: Dados não persistem
+
+```bash
+# Verificar permissões
+ls -la python/data/
+chmod 755 python/data/
+
+# Verificar espaço em disco
+df -h
+
+# Reconstruir sem cache
+docker-compose down -v
+docker-compose up -d
+```
+
+## 📝 Estrutura de Arquivos
+
+```
+Request-Reply/
+├── docker-compose.yml          # Orquestração de containers
+├── python/
+│   ├── broker.py              # Broker REQ-REP
+│   ├── pubsub_proxy.py        # Proxy Pub/Sub
+│   ├── servidor.py            # Servidor BBS
+│   ├── client.py              # Cliente interativo (Novo!)
+│   ├── auto_client.py         # Bot automático (Novo!)
+│   ├── persistence.py         # Gerenciar persistência JSON
+│   ├── common/
+│   │   └── message_protocol.py # Protocolo MessagePack
+│   ├── Dockerfile_broker      # Imagem broker
+│   ├── Dockerfile_servidor    # Imagem servidor
+│   ├── Dockerfile_testes      # Imagem testes
+│   ├── data/                  # Dados persistidos (JSON)
+│   │   ├── users.json
+│   │   ├── channels.json
+│   │   ├── logins.json
+│   │   └── messages.json
+│   └── tests/
+│       ├── test_*.py          # Testes unitários e integração
+│       └── all_tests.py       # Suite completa
+├── go/
+│   ├── reference/
+│   │   └── main.go            # Reference Server (Novo!)
+│   ├── common/
+│   │   └── protocol.go        # Protocolo Go
+│   ├── clock/
+│   │   └── sync.go            # Sincronização Berkeley
+│   ├── Dockerfile_reference   # Imagem Reference Server
+│   └── go.sum
+└── c/                         # Clientes em C (opcional)
+    ├── client.c
+    ├── auto_client.c
+    └── common/
+        ├── message_protocol.c
+        └── logical_clock.c
+
 
 

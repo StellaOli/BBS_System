@@ -8,21 +8,21 @@ RUN apt-get update && apt-get install -y \
     libzmq3-dev \
     && rm -rf /var/lib/apt/lists/*
     
-# Copiar código GO
-COPY . .
+# Copiar go.mod
+COPY go.mod ./
 
-# Criar go.mod se não existir e adicionar dependências
-RUN if [ ! -f "go.mod" ]; then \
-        go mod init reference-server && \
-        go get github.com/pebbe/zmq4 && \
-        go get github.com/vmihailenco/msgpack/v5; \
-    fi
+# Baixar dependências
+RUN go get github.com/pebbe/zmq4@v1.2.9 && \
+    go get github.com/vmihailenco/msgpack/v5@v5.4.1
 
-# Inicializar módulo GO e baixar dependências
-RUN go mod tidy
+# Copiar código GO (arquivos específicamente para evitar conflito)
+COPY reference reference
+COPY common common
+COPY clock clock
 
+# Compilar - output como reference_server
+RUN go build -o reference_server ./reference/main.go
 
-# Compilar
-RUN go build -o reference reference/main.go
+EXPOSE 5559
 
-CMD ["go", "run", "reference/main.go"]
+CMD ["./reference_server"]
