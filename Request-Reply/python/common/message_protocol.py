@@ -9,7 +9,7 @@ class MessageProtocol:
         message = {
             "service": service,
             "data": data,
-            "timestamp": int(time.time()),  # ✅ int64 como no Go
+            "timestamp": int(time.time()),  
             "clock": clock
         }
         return msgpack.packb(message)
@@ -44,14 +44,14 @@ class MessageProtocol:
     def create_coordinator_message(coordinator: str, clock: int = 0) -> bytes:
         return MessageProtocol.create_message("coordinator", {"coordinator": coordinator}, clock)
     
-    # ✅ MÉTODOS PARA SISTEMA BBS
+    # MÉTODOS PARA SISTEMA BBS
     @staticmethod
     def create_login_message(username: str, clock: int = 0) -> bytes:
         return MessageProtocol.create_message("login", {"user": username}, clock)
     
     @staticmethod
     def create_login_response(success: bool, description: str = "", clock: int = 0) -> bytes:
-        status = "success" if success else "error"
+        status = "sucesso" if success else "erro"
         return MessageProtocol.create_message("login", {
             "status": status,
             "description": description
@@ -71,7 +71,7 @@ class MessageProtocol:
     
     @staticmethod
     def create_channel_response(success: bool, description: str = "", clock: int = 0) -> bytes:
-        status = "success" if success else "error"
+        status = "sucesso" if success else "erro"
         return MessageProtocol.create_message("channel", {
             "status": status,
             "description": description
@@ -95,7 +95,7 @@ class MessageProtocol:
     
     @staticmethod
     def create_publish_response(success: bool, description: str = "", clock: int = 0) -> bytes:
-        status = "OK" if success else "error"
+        status = "OK" if success else "erro"
         return MessageProtocol.create_message("publish", {
             "status": status,
             "message": description
@@ -111,7 +111,7 @@ class MessageProtocol:
     
     @staticmethod
     def create_private_message_response(success: bool, description: str = "", clock: int = 0) -> bytes:
-        status = "OK" if success else "error"
+        status = "OK" if success else "erro"
         return MessageProtocol.create_message("message", {
             "status": status,
             "message": description
@@ -145,7 +145,7 @@ class MessageProtocol:
         message = {
             "sender": sender,
             "content": content,
-            "timestamp": int(time.time())  # ✅ int64 como no Go
+            "timestamp": int(time.time())  
         }
         if target:
             message["target"] = target
@@ -184,7 +184,7 @@ class MessageProtocol:
         except:
             return 0
 
-    # ✅ NOVOS MÉTODOS UTILITÁRIOS PARA DEBUG
+    # MÉTODOS UTILITÁRIOS PARA DEBUG
     @staticmethod
     def print_message_structure(message_bytes: bytes, label: str = "Mensagem"):
         """Debug: mostra estrutura da mensagem"""

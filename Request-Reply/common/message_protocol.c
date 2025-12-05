@@ -213,7 +213,10 @@ int parse_message(const unsigned char* data, size_t size, msgpack_object* result
     msgpack_unpacked unpacked;
     msgpack_unpacked_init(&unpacked);
     
-    if (msgpack_unpack_next(&unpacked, data, size, NULL)) {
+    size_t offset = 0;
+    msgpack_unpack_return ret = msgpack_unpack_next(&unpacked, data, size, &offset);
+    
+    if (ret == MSGPACK_UNPACK_SUCCESS) {
         *result = unpacked.data;
         msgpack_unpacked_destroy(&unpacked);
         return 0;
@@ -236,6 +239,7 @@ void extract_string_field(msgpack_object* obj, const char* field, char* buffer, 
             msgpack_object val = obj->via.map.ptr[i].val;
             
             if (key.type == MSGPACK_OBJECT_STR && 
+                strlen(field) == key.via.str.size &&
                 strncmp(key.via.str.ptr, field, key.via.str.size) == 0 &&
                 val.type == MSGPACK_OBJECT_STR) {
                 
@@ -258,6 +262,7 @@ void extract_service_data(msgpack_object* root, char* status, size_t status_size
             msgpack_object key = root->via.map.ptr[i].key;
             
             if (key.type == MSGPACK_OBJECT_STR && 
+                4 == key.via.str.size &&
                 strncmp(key.via.str.ptr, "data", key.via.str.size) == 0) {
                 
                 msgpack_object data = root->via.map.ptr[i].val;
@@ -278,6 +283,7 @@ void print_users_list(msgpack_object* root) {
             msgpack_object key = root->via.map.ptr[i].key;
             
             if (key.type == MSGPACK_OBJECT_STR && 
+                4 == key.via.str.size &&
                 strncmp(key.via.str.ptr, "data", key.via.str.size) == 0) {
                 
                 msgpack_object data = root->via.map.ptr[i].val;
@@ -287,6 +293,7 @@ void print_users_list(msgpack_object* root) {
                         msgpack_object val2 = data.via.map.ptr[j].val;
                         
                         if (key2.type == MSGPACK_OBJECT_STR && 
+                            5 == key2.via.str.size &&
                             strncmp(key2.via.str.ptr, "users", key2.via.str.size) == 0 &&
                             val2.type == MSGPACK_OBJECT_ARRAY) {
                             

@@ -10,9 +10,12 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# Compilar o cliente com MessagePack
+# Copiar código fonte
 COPY client.c .
+COPY Makefile .
 COPY common/ ./common/
 
-RUN gcc -Wall -g -std=c99 -pthread -o client client.c common/message_protocol.c common/logical_clock.c -lzmq -lmsgpackc -lreadline
+# Compilar
+RUN gcc -Wall -g -std=c99 -pthread -I./common -o client client.c common/message_protocol.c common/logical_clock.c -lzmq -lmsgpackc -lreadline
+
 CMD ["./client"]

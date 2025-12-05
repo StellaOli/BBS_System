@@ -19,7 +19,7 @@ typedef struct {
     void* sub_socket;
     char current_user[32];
     int receiving;
-    logical_clock_t clock; // ✅ NOVO: Relógio lógico
+    logical_clock_t clock; // Relógio lógico
 } bbs_client_t;
 
 
@@ -40,7 +40,7 @@ void print_help() {
 }
 
 int send_request(bbs_client_t* client, msgpack_sbuffer* request, msgpack_sbuffer* response) {
-    // ✅ NOVO: Incrementar relógio antes do envio
+    // Incrementar relógio antes do envio
     logical_clock_increment(&client->clock);
     
     // Enviar requisição
@@ -61,7 +61,7 @@ int send_request(bbs_client_t* client, msgpack_sbuffer* request, msgpack_sbuffer
     msgpack_sbuffer_clear(response);
     msgpack_sbuffer_write(response, reply_buffer, recv_result);
     
-    // ✅ NOVO: Atualizar relógio com resposta
+    // Atualizar relógio com resposta
     msgpack_object data;
     if (parse_message(response->data, response->size, &data) == 0) {
         int64_t received_clock = extract_clock_field(&data);
@@ -96,7 +96,7 @@ void* receive_messages(void* arg) {
         
         int recv_result = zmq_recv(client->sub_socket, msg_buffer, sizeof(msg_buffer) - 1, 0);
         if (recv_result != -1) {
-            // ✅ NOVO: Incrementar relógio ao receber mensagem
+            // Incrementar relógio ao receber mensagem
             logical_clock_increment(&client->clock);
             
             // Parsear mensagem Pub/Sub
@@ -111,7 +111,7 @@ void* receive_messages(void* arg) {
                 extract_string_field(&data, "content", content, sizeof(content));
                 extract_string_field(&data, "target", target, sizeof(target));
                 
-                // ✅ NOVO: Extrair e atualizar clock da mensagem recebida
+                // Extrair e atualizar clock da mensagem recebida
                 int64_t received_clock = extract_clock_field(&data);
                 if (received_clock > 0) {
                     logical_clock_update(&client->clock, received_clock);
@@ -134,7 +134,7 @@ int login_user(bbs_client_t* client, const char* username) {
     msgpack_sbuffer_init(&request);
     msgpack_sbuffer_init(&response);
     
-    // ✅ MODIFICADO: Incluir clock na mensagem
+    // Incluir clock na mensagem
     create_login_message(username, logical_clock_get(&client->clock), &request);
     
     // Enviar e receber resposta
@@ -185,7 +185,7 @@ int list_users(bbs_client_t* client) {
     msgpack_sbuffer_init(&request);
     msgpack_sbuffer_init(&response);
     
-    // ✅ MODIFICADO: Incluir clock na mensagem
+    // Incluir clock na mensagem
     create_users_list_message(logical_clock_get(&client->clock), &request);
     
     if (send_request(client, &request, &response) != 0) {
@@ -215,7 +215,7 @@ int create_channel(bbs_client_t* client, const char* channel_name) {
     msgpack_sbuffer_init(&request);
     msgpack_sbuffer_init(&response);
     
-    // ✅ MODIFICADO: Incluir clock na mensagem
+    // Incluir clock na mensagem
     create_channel_message(channel_name, logical_clock_get(&client->clock), &request);
     
     if (send_request(client, &request, &response) != 0) {
@@ -243,6 +243,31 @@ int create_channel(bbs_client_t* client, const char* channel_name) {
     return 0;
 }
 
+int list_channels(bbs_client_t* client) {
+    msgpack_sbuffer request, response;
+    msgpack_sbuffer_init(&request);
+    msgpack_sbuffer_init(&response);
+    
+    // Incluir clock na mensagem
+    create_channels_list_message(logical_clock_get(&client->clock), &request);
+    
+    if (send_request(client, &request, &response) != 0) {
+        msgpack_sbuffer_destroy(&request);
+        msgpack_sbuffer_destroy(&response);
+        return -1;
+    }
+    
+    msgpack_object data;
+    if (parse_message(response.data, response.size, &data) == 0) {
+        printf("\n📢 Canais do sistema | ⏰ Clock: %ld\n", logical_clock_get(&client->clock));
+        print_channels_list(&data);
+    }
+    
+    msgpack_sbuffer_destroy(&request);
+    msgpack_sbuffer_destroy(&response);
+    return 0;
+}
+
 int publish_message(bbs_client_t* client, const char* channel, const char* message) {
     if (strlen(client->current_user) == 0) {
         printf("❌ Você precisa estar logado\n");
@@ -253,7 +278,7 @@ int publish_message(bbs_client_t* client, const char* channel, const char* messa
     msgpack_sbuffer_init(&request);
     msgpack_sbuffer_init(&response);
     
-    // ✅ MODIFICADO: Incluir clock na mensagem
+    // Incluir clock na mensagem
     create_publish_message(client->current_user, channel, message, logical_clock_get(&client->clock), &request);
     
     if (send_request(client, &request, &response) != 0) {
@@ -281,6 +306,31 @@ int publish_message(bbs_client_t* client, const char* channel, const char* messa
     return 0;
 }
 
+int get_message_history(bbs_client_t* client, const char* channel) {
+    msgpack_sbuffer request, response;
+    msgpack_sbuffer_init(&request);
+    msgpack_sbuffer_init(&response);
+    
+    // Incluir clock na mensagem
+    create_history_message(channel, logical_clock_get(&client->clock), &request);
+    
+    if (send_request(client, &request, &response) != 0) {
+        msgpack_sbuffer_destroy(&request);
+        msgpack_sbuffer_destroy(&response);
+        return -1;
+    }
+    
+    msgpack_object data;
+    if (parse_message(response.data, response.size, &data) == 0) {
+        printf("\n📜 Histórico do canal '%s' | ⏰ Clock: %ld\n", channel, logical_clock_get(&client->clock));
+        print_message_history(&data);
+    }
+    
+    msgpack_sbuffer_destroy(&request);
+    msgpack_sbuffer_destroy(&response);
+    return 0;
+}
+
 int send_private_message(bbs_client_t* client, const char* destination, const char* message) {
     if (strlen(client->current_user) == 0) {
         printf("❌ Você precisa estar logado\n");
@@ -291,7 +341,7 @@ int send_private_message(bbs_client_t* client, const char* destination, const ch
     msgpack_sbuffer_init(&request);
     msgpack_sbuffer_init(&response);
     
-    // ✅ MODIFICADO: Incluir clock na mensagem
+    // Incluir clock na mensagem
     create_private_message(client->current_user, destination, message, logical_clock_get(&client->clock), &request);
     
     if (send_request(client, &request, &response) != 0) {
@@ -369,8 +419,7 @@ void start_interactive(bbs_client_t* client) {
             create_channel(client, arg1);
         }
         else if (strcmp(command, "channels") == 0) {
-            // Implementar list_channels
-            printf("📢 Funcionalidade em desenvolvimento | ⏰ Clock: %ld\n", logical_clock_get(&client->clock));
+            list_channels(client);
         }
         else if (strcmp(command, "pub") == 0 && args >= 3) {
             publish_message(client, arg1, arg2);
@@ -387,6 +436,9 @@ void start_interactive(bbs_client_t* client) {
             char topic[64];
             snprintf(topic, sizeof(topic), "channel.%s", arg1);
             unsubscribe_from_topic(client, topic);
+        }
+        else if (strcmp(command, "history") == 0 && args >= 2) {
+            get_message_history(client, arg1);
         }
         else if (strcmp(command, "clock") == 0) {
             printf("⏰ Relógio lógico atual: %ld\n", logical_clock_get(&client->clock));
@@ -406,7 +458,7 @@ int main() {
     bbs_client_t client;
     memset(&client, 0, sizeof(client));
     
-    // ✅ NOVO: Inicializar relógio lógico
+    // Inicializar relógio lógico
     logical_clock_init(&client.clock);
     
     // Inicializar ZeroMQ

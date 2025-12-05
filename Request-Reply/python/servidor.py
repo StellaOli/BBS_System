@@ -7,6 +7,8 @@ from datetime import datetime
 
 sys.path.append('/app')
 
+from replication import DataReplicationManager, ServerReplicationSynchronizer
+
 class LogicalClock:
     """✅ NOVO: Relógio lógico para sincronização"""
     def __init__(self):
@@ -28,7 +30,7 @@ class BBSServer:
         self.context = zmq.Context()
         self.server_name = server_name
         
-        # ✅ NOVO: Relógio lógico
+        # Relógio lógico
         self.logical_clock = LogicalClock()
         
         # Socket REQ-REP (existente)
@@ -37,10 +39,10 @@ class BBSServer:
         # Socket PUB para publicar mensagens
         self.pub_socket = self.context.socket(zmq.PUB)
         
-        # ✅ NOVO: Socket para comunicação com reference server
+        # Socket para comunicação com reference server
         self.ref_socket = self.context.socket(zmq.REQ)
         
-        # ✅ NOVO: Socket para eleição e sincronização entre servidores
+        # Socket para eleição e sincronização entre servidores
         self.election_socket = self.context.socket(zmq.REP)
         self.coordinator_socket = self.context.socket(zmq.REQ)
         
@@ -51,7 +53,14 @@ class BBSServer:
         self.MessageProtocol = MessageProtocol
         self.active_users = set()
         
-        # ✅ NOVO: Variáveis para coordenação
+        # Replicação de dados (Parte 5)
+        self.replication_manager = DataReplicationManager(server_name)
+        self.replication_sync = ServerReplicationSynchronizer(
+            self.replication_manager,
+            other_servers=["servidor-1", "servidor-2", "servidor-3"]
+        )
+        
+        #  Variáveis para coordenação
         self.coordinator = None
         self.rank = None
         self.reference_endpoint = os.getenv('REFERENCE_ENDPOINT', 'tcp://reference:5559')
@@ -169,14 +178,17 @@ class BBSServer:
             print(f"❌ Erro ao anunciar coordenador: {e}")
     
     def start(self):
-        # ✅ NOVO: Registrar no reference server primeiro
+        # Registrar no reference server primeiro
         self.register_with_reference()
         
-        # ✅ NOVO: Iniciar eleição
+        # Iniciar eleição
         self.start_election()
         
-        # ✅ NOVO: Iniciar thread de heartbeats
+        # Iniciar thread de heartbeats
         self.start_heartbeat_thread()
+        
+        # Iniciar sincronização de replicação (Parte 5)
+        self.replication_sync.start_sync_thread()
         
         # Conectar sockets existentes
         self.rep_socket.connect("tcp://broker:5556")  # Broker Req-Rep
@@ -187,74 +199,35 @@ class BBSServer:
         print(f"   🏆 Rank: {self.rank}")
         print(f"   👑 Coordenador: {self.coordinator}")
         print(f"   ⏰ Relógio lógico: {self.logical_clock.get()}")
+        print(f"   📋 Operações replicadas: {len(self.replication_manager.operation_log)}")
         print("   📨 Req-Rep: broker:5556")
         print("   📢 Pub/Sub: pubsub-proxy:5557")
         
-        # ✅ NOVO: Sincronização periódica
+        # Sincronização periódica
         sync_counter = 0
         
         while True:
             try:
                 # Processar requisições Req-Rep
-                print(f"=== 🔍 DEBUG INICIO ===")
-                print(f"📨 Aguardando mensagem no socket...")
                 message_data = self.rep_socket.recv()
-                print(f"🔍 DEBUG: Mensagem RAW recebida")
-                print(f"   Tipo: {type(message_data)}")
-                print(f"   Tamanho: {len(message_data)} bytes")
-                print(f"   Primeiros 50 bytes: {message_data[:50]}")
                 
-                # Testar parse imediatamente
-                try:
-                    test_parse = self.MessageProtocol.parse_message(message_data)
-                    print(f"✅ DEBUG: Parse imediato OK - Service: {test_parse.get('service')}")
-                except Exception as parse_err:
-                    print(f"❌ DEBUG: Parse imediato FALHOU: {parse_err}")
-                    print(f"💥 ERRO CRÍTICO: Mensagem não é MessagePack válido!")
+                # Parse da mensagem MessagePack
                 message = self.MessageProtocol.parse_message(message_data)
-                message_str = str(message)
-                print(f"📨 Mensagem recebida: {message_str}")
+                print(f"📨 Mensagem recebida - Service: {message.get('service')}")
                 
-                # ✅ NOVO: Incrementar relógio lógico ao receber mensagem
+                # Incrementar relógio lógico ao receber mensagem
                 self.logical_clock.increment()
                 
-                response = self._process_message(message_str)
-                # 🔧 GARANTIR compatibilidade com cliente C
-                if isinstance(response, str):
-                    print("⚠️  ATENÇÃO: Resposta é string, convertendo para bytes")
-                    response = response.encode('utf-8')
-                elif response is None:
-                    print("⚠️  ATENÇÃO: Resposta é None, criando resposta de erro")
-                    response = self.MessageProtocol.create_error_response("Resposta vazia do servidor", self.logical_clock.get())
+                response = self._process_message(message)
                 
-                print(f"🔍 DEBUG FINAL - Tipo resposta: {type(response)}, Tamanho: {len(response)}")
-
-                
-
-                print(f"🔍 DEBUG: Enviando resposta")
-                print(f"   Tipo resposta: {type(response)}")
-                print(f"   Tamanho resposta: {len(response)} bytes")
-                print(f"=== 🔍 DEBUG FIM ===\n")
-
-                print(f"🔍 DEBUG ANTES DO SEND:")
-                print(f"   Tipo da resposta: {type(response)}")
-                print(f"   É bytes: {isinstance(response, bytes)}")
-                print(f"   É string: {isinstance(response, str)}")
-                print(f"   Tamanho: {len(response) if response else 0}")
-                
-                # Garantir que é bytes
-                if isinstance(response, str):
-                    print("💥 ERRO: Resposta é string! Convertendo...")
-                    response = response.encode('utf-8')
-                elif not isinstance(response, bytes):
-                    print("💥 ERRO: Resposta não é bytes! Convertendo...")
-                    response = str(response).encode('utf-8')
+                # Garantir que resposta é bytes
+                if not isinstance(response, bytes):
+                    response = response.encode('utf-8') if isinstance(response, str) else str(response).encode('utf-8')
 
                 self.rep_socket.send(response)
+                print(f"📤 Resposta enviada")
                 
-                print(f"📤 Resposta enviada: {response}")
-                
-                # ✅ NOVO: Sincronizar a cada 10 mensagens
+                # Sincronizar a cada 10 mensagens
                 sync_counter += 1
                 if sync_counter >= 10:
                     self.synchronize_with_coordinator()
@@ -264,13 +237,12 @@ class BBSServer:
                 error_response = self._create_error_response(f"Erro interno: {str(e)}")
                 self.rep_socket.send(error_response)
     
-    def _process_message(self, message_str: str) -> bytes:
+    def _process_message(self, message: dict) -> bytes:
         try:
-            message = self.MessageProtocol.parse_message(message_str)
             service = message.get("service")
             data = message.get("data", {})
             
-            # ✅ NOVO: Atualizar relógio lógico com clock recebido
+            # Atualizar relógio lógico com clock recebido
             received_clock = data.get("clock", 0)
             if received_clock > 0:
                 self.logical_clock.update(received_clock)
@@ -310,6 +282,14 @@ class BBSServer:
         if success:
             self.persistence.record_login(username)
             self.active_users.add(username)
+            
+            # Registrar operação para replicação (Parte 5)
+            self.replication_manager.log_operation(
+                "add_user",
+                {"username": username},
+                time.time()
+            )
+            
             return self.MessageProtocol.create_login_response(
                 True, "Login realizado com sucesso", self.logical_clock.get()
             )
@@ -318,7 +298,7 @@ class BBSServer:
                 False, "Usuário já existe no sistema", self.logical_clock.get()
             )
     
-    # ✅ NOVO: Atualizar TODOS os métodos de resposta para incluir clock
+    # Atualizar TODOS os métodos de resposta para incluir clock
     def _handle_users_list(self, data: dict) -> bytes:
         users = self.persistence.get_all_users()
         return self.MessageProtocol.create_users_list_response(users, self.logical_clock.get())
@@ -334,6 +314,13 @@ class BBSServer:
         success = self.persistence.add_channel(channel_name)
         
         if success:
+            # Registrar operação para replicação (Parte 5)
+            self.replication_manager.log_operation(
+                "add_channel",
+                {"name": channel_name},
+                time.time()
+            )
+            
             return self.MessageProtocol.create_channel_response(
                 True, f"Canal '{channel_name}' criado com sucesso", self.logical_clock.get()
             )
@@ -372,17 +359,16 @@ class BBSServer:
                 False, f"Usuário '{user}' não existe", self.logical_clock.get()
             )
         
-        # ✅ NOVO: Incluir timestamp e clock na mensagem
+        # Incluir clock na mensagem (timestamp é gerado automaticamente)
         pub_message = self.MessageProtocol.create_pubsub_message(
             sender=user,
             content=message_content,
             target=channel,
-            timestamp=datetime.now().isoformat(),
             clock=self.logical_clock.get()
         )
         
         topic = f"channel.{channel}".encode('utf-8')
-        self.pub_socket.send_multipart([topic, pub_message.encode('utf-8')])
+        self.pub_socket.send_multipart([topic, pub_message])
         
         message_data = {
             "type": "channel",
@@ -393,6 +379,18 @@ class BBSServer:
             "clock": self.logical_clock.get()
         }
         self.persistence.save_message(message_data)
+        
+        # Registrar operação para replicação (Parte 5)
+        self.replication_manager.log_operation(
+            "save_message",
+            {
+                "type": "channel",
+                "from": user,
+                "to": channel,
+                "content": message_content
+            },
+            time.time()
+        )
         
         print(f"📢 Mensagem publicada no canal '{channel}': {user} -> {message_content}")
         return self.MessageProtocol.create_publish_response(
@@ -420,17 +418,16 @@ class BBSServer:
                 False, f"Usuário '{src_user}' não existe", self.logical_clock.get()
             )
         
-        # ✅ NOVO: Incluir timestamp e clock na mensagem
+        # Incluir clock na mensagem (timestamp é gerado automaticamente)
         pub_message = self.MessageProtocol.create_pubsub_message(
             sender=src_user,
             content=message_content,
             target=dst_user,
-            timestamp=datetime.now().isoformat(),
             clock=self.logical_clock.get()
         )
         
         topic = f"user.{dst_user}".encode('utf-8')
-        self.pub_socket.send_multipart([topic, pub_message.encode('utf-8')])
+        self.pub_socket.send_multipart([topic, pub_message])
         
         message_data = {
             "type": "private",
@@ -441,6 +438,18 @@ class BBSServer:
             "clock": self.logical_clock.get()
         }
         self.persistence.save_message(message_data)
+        
+        # Registrar operação para replicação (Parte 5)
+        self.replication_manager.log_operation(
+            "save_message",
+            {
+                "type": "private",
+                "from": src_user,
+                "to": dst_user,
+                "content": message_content
+            },
+            time.time()
+        )
         
         print(f"📩 Mensagem privada: {src_user} -> {dst_user}: {message_content}")
         return self.MessageProtocol.create_private_message_response(
@@ -482,7 +491,7 @@ class BBSServer:
         )
 
 if __name__ == "__main__":
-    # ✅ NOVO: Obter nome do servidor da variável de ambiente
+    # Obter nome do servidor da variável de ambiente
     server_name = os.getenv('SERVER_NAME', 'servidor-1')
     server = BBSServer(server_name)
     server.start()

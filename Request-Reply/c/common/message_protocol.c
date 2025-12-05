@@ -208,12 +208,82 @@ void create_private_message(const char* src, const char* dst, const char* messag
     msgpack_pack_int64(&pk, clock);
 }
 
+void create_channels_list_message(int64_t clock, msgpack_sbuffer* sbuf) {
+    msgpack_packer pk;
+    char timestamp[32];
+    
+    get_current_timestamp(timestamp, sizeof(timestamp));
+    msgpack_sbuffer_init(sbuf);
+    msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
+    
+    msgpack_pack_map(&pk, 3);
+    
+    msgpack_pack_str(&pk, 7);
+    msgpack_pack_str_body(&pk, "service", 7);
+    msgpack_pack_str(&pk, 8);
+    msgpack_pack_str_body(&pk, "channels", 8);
+    
+    msgpack_pack_str(&pk, 4);
+    msgpack_pack_str_body(&pk, "data", 4);
+    msgpack_pack_map(&pk, 1);
+    
+    msgpack_pack_str(&pk, 9);
+    msgpack_pack_str_body(&pk, "timestamp", 9);
+    msgpack_pack_str(&pk, strlen(timestamp));
+    msgpack_pack_str_body(&pk, timestamp, strlen(timestamp));
+    
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "clock", 5);
+    msgpack_pack_int64(&pk, clock);
+}
+
+void create_history_message(const char* channel, int64_t clock, msgpack_sbuffer* sbuf) {
+    msgpack_packer pk;
+    char timestamp[32];
+    
+    get_current_timestamp(timestamp, sizeof(timestamp));
+    msgpack_sbuffer_init(sbuf);
+    msgpack_packer_init(&pk, sbuf, msgpack_sbuffer_write);
+    
+    msgpack_pack_map(&pk, 3);
+    
+    msgpack_pack_str(&pk, 7);
+    msgpack_pack_str_body(&pk, "service", 7);
+    msgpack_pack_str(&pk, 7);
+    msgpack_pack_str_body(&pk, "history", 7);
+    
+    msgpack_pack_str(&pk, 4);
+    msgpack_pack_str_body(&pk, "data", 4);
+    msgpack_pack_map(&pk, 3);
+    
+    msgpack_pack_str(&pk, 4);
+    msgpack_pack_str_body(&pk, "type", 4);
+    msgpack_pack_str(&pk, 7);
+    msgpack_pack_str_body(&pk, "channel", 7);
+    
+    msgpack_pack_str(&pk, 6);
+    msgpack_pack_str_body(&pk, "target", 6);
+    msgpack_pack_str(&pk, strlen(channel));
+    msgpack_pack_str_body(&pk, channel, strlen(channel));
+    
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "limit", 5);
+    msgpack_pack_int64(&pk, 50);
+    
+    msgpack_pack_str(&pk, 5);
+    msgpack_pack_str_body(&pk, "clock", 5);
+    msgpack_pack_int64(&pk, clock);
+}
+
 // Parsear mensagem
-int parse_message(const char* data, size_t size, msgpack_object* result) {
+int parse_message(const unsigned char* data, size_t size, msgpack_object* result) {
     msgpack_unpacked unpacked;
     msgpack_unpacked_init(&unpacked);
     
-    if (msgpack_unpack_next(&unpacked, data, size, NULL)) {
+    size_t offset = 0;
+    msgpack_unpack_return ret = msgpack_unpack_next(&unpacked, data, size, &offset);
+    
+    if (ret == MSGPACK_UNPACK_SUCCESS) {
         *result = unpacked.data;
         msgpack_unpacked_destroy(&unpacked);
         return 0;
@@ -224,8 +294,8 @@ int parse_message(const char* data, size_t size, msgpack_object* result) {
 }
 
 // Parsear mensagem Pub/Sub
-int parse_pubsub_message(const char* data, size_t size, msgpack_object* result) {
-    return parse_message(data, size, result);
+int parse_pubsub_message(const unsigned char* data, size_t size, msgpack_object* result) {
+    return parse_message((const unsigned char*)data, size, result);
 }
 
 // Extrair campo string de um objeto
@@ -236,6 +306,7 @@ void extract_string_field(msgpack_object* obj, const char* field, char* buffer, 
             msgpack_object val = obj->via.map.ptr[i].val;
             
             if (key.type == MSGPACK_OBJECT_STR && 
+                strlen(field) == key.via.str.size &&
                 strncmp(key.via.str.ptr, field, key.via.str.size) == 0 &&
                 val.type == MSGPACK_OBJECT_STR) {
                 
@@ -258,6 +329,7 @@ void extract_service_data(msgpack_object* root, char* status, size_t status_size
             msgpack_object key = root->via.map.ptr[i].key;
             
             if (key.type == MSGPACK_OBJECT_STR && 
+                4 == key.via.str.size &&
                 strncmp(key.via.str.ptr, "data", key.via.str.size) == 0) {
                 
                 msgpack_object data = root->via.map.ptr[i].val;
@@ -278,6 +350,7 @@ void print_users_list(msgpack_object* root) {
             msgpack_object key = root->via.map.ptr[i].key;
             
             if (key.type == MSGPACK_OBJECT_STR && 
+                4 == key.via.str.size &&
                 strncmp(key.via.str.ptr, "data", key.via.str.size) == 0) {
                 
                 msgpack_object data = root->via.map.ptr[i].val;
@@ -287,6 +360,7 @@ void print_users_list(msgpack_object* root) {
                         msgpack_object val2 = data.via.map.ptr[j].val;
                         
                         if (key2.type == MSGPACK_OBJECT_STR && 
+                            5 == key2.via.str.size &&
                             strncmp(key2.via.str.ptr, "users", key2.via.str.size) == 0 &&
                             val2.type == MSGPACK_OBJECT_ARRAY) {
                             
@@ -305,6 +379,95 @@ void print_users_list(msgpack_object* root) {
         }
     }
     printf("  📭 Nenhum usuário cadastrado\n");
+}
+
+// ✅ NOVO: Imprimir lista de canais
+void print_channels_list(msgpack_object* root) {
+    if (root->type == MSGPACK_OBJECT_MAP) {
+        for (int i = 0; i < root->via.map.size; i++) {
+            msgpack_object key = root->via.map.ptr[i].key;
+            
+            if (key.type == MSGPACK_OBJECT_STR && 
+                4 == key.via.str.size &&
+                strncmp(key.via.str.ptr, "data", key.via.str.size) == 0) {
+                
+                msgpack_object data = root->via.map.ptr[i].val;
+                if (data.type == MSGPACK_OBJECT_MAP) {
+                    for (int j = 0; j < data.via.map.size; j++) {
+                        msgpack_object key2 = data.via.map.ptr[j].key;
+                        msgpack_object val2 = data.via.map.ptr[j].val;
+                        
+                        if (key2.type == MSGPACK_OBJECT_STR && 
+                            8 == key2.via.str.size &&
+                            strncmp(key2.via.str.ptr, "channels", key2.via.str.size) == 0 &&
+                            val2.type == MSGPACK_OBJECT_ARRAY) {
+                            
+                            printf("\n📢 Canais disponíveis:\n");
+                            for (int k = 0; k < val2.via.array.size; k++) {
+                                msgpack_object channel = val2.via.array.ptr[k];
+                                if (channel.type == MSGPACK_OBJECT_STR) {
+                                    printf("  - %.*s\n", channel.via.str.size, channel.via.str.ptr);
+                                }
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    printf("  📭 Nenhum canal criado\n");
+}
+
+// ✅ NOVO: Imprimir histórico de mensagens
+void print_message_history(msgpack_object* root) {
+    if (root->type == MSGPACK_OBJECT_MAP) {
+        for (int i = 0; i < root->via.map.size; i++) {
+            msgpack_object key = root->via.map.ptr[i].key;
+            
+            if (key.type == MSGPACK_OBJECT_STR && 
+                4 == key.via.str.size &&
+                strncmp(key.via.str.ptr, "data", key.via.str.size) == 0) {
+                
+                msgpack_object data = root->via.map.ptr[i].val;
+                if (data.type == MSGPACK_OBJECT_MAP) {
+                    for (int j = 0; j < data.via.map.size; j++) {
+                        msgpack_object key2 = data.via.map.ptr[j].key;
+                        msgpack_object val2 = data.via.map.ptr[j].val;
+                        
+                        if (key2.type == MSGPACK_OBJECT_STR && 
+                            8 == key2.via.str.size &&
+                            strncmp(key2.via.str.ptr, "messages", key2.via.str.size) == 0 &&
+                            val2.type == MSGPACK_OBJECT_ARRAY) {
+                            
+                            printf("\n📜 Histórico de mensagens:\n");
+                            if (val2.via.array.size == 0) {
+                                printf("  📭 Nenhuma mensagem\n");
+                            } else {
+                                for (int k = 0; k < val2.via.array.size; k++) {
+                                    msgpack_object msg = val2.via.array.ptr[k];
+                                    if (msg.type == MSGPACK_OBJECT_MAP) {
+                                        char user[64] = "", content[256] = "";
+                                        // Tentar ambos "user" e "from"
+                                        extract_string_field(&msg, "user", user, sizeof(user));
+                                        if (user[0] == '\0') {
+                                            extract_string_field(&msg, "from", user, sizeof(user));
+                                        }
+                                        extract_string_field(&msg, "content", content, sizeof(content));
+                                        if (user[0] != '\0' && content[0] != '\0') {
+                                            printf("  • %s: %s\n", user, content);
+                                        }
+                                    }
+                                }
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    printf("  📭 Sem histórico disponível\n");
 }
 
 // ✅ NOVO: Extrair campo clock

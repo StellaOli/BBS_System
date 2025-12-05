@@ -21,7 +21,7 @@ typedef struct {
     char username[32];
     int message_count;
     int running;
-    logical_clock_t clock; // ✅ NOVO: Relógio lógico
+    logical_clock_t clock; // Relógio lógico
 } auto_client_t;
 
 
@@ -53,7 +53,7 @@ void generate_username(char* buffer, size_t size) {
 
 // Função para enviar requisição usando MessagePack 
 int send_request(auto_client_t* client, msgpack_sbuffer* request, msgpack_sbuffer* response) {
-    // ✅ NOVO: Incrementar relógio antes do envio
+    // Incrementar relógio antes do envio
     logical_clock_increment(&client->clock);
     
     // Enviar mensagem
@@ -63,7 +63,10 @@ int send_request(auto_client_t* client, msgpack_sbuffer* request, msgpack_sbuffe
         return -1;
     }
 
-    // Receber resposta
+    // Receber resposta com timeout de 5 segundos
+    int timeout = 5000;  // 5000ms = 5s
+    zmq_setsockopt(client->req_socket, ZMQ_RCVTIMEO, &timeout, sizeof(timeout));
+    
     char reply_buffer[4096];
     int recv_result = zmq_recv(client->req_socket, reply_buffer, sizeof(reply_buffer) - 1, 0);
     if (recv_result == -1) {
@@ -75,7 +78,7 @@ int send_request(auto_client_t* client, msgpack_sbuffer* request, msgpack_sbuffe
     msgpack_sbuffer_clear(response);
     msgpack_sbuffer_write(response, reply_buffer, recv_result);
     
-    // ✅ NOVO: Atualizar relógio com resposta
+    // Atualizar relógio com resposta
     msgpack_object data;
     if (parse_message(response->data, response->size, &data) == 0) {
         int64_t received_clock = extract_clock_field(&data);
@@ -94,7 +97,7 @@ int bot_login(auto_client_t* client) {
     msgpack_sbuffer_init(&request_buf);
     msgpack_sbuffer_init(&response_buf);
     
-    // ✅ MODIFICADO: Incluir clock na mensagem
+    // Incluir clock na mensagem
     create_login_message(client->username, logical_clock_get(&client->clock), &request_buf);    
     if (send_request(client, &request_buf, &response_buf) != 0) {
         msgpack_sbuffer_destroy(&request_buf);
@@ -141,7 +144,7 @@ void ensure_channels_exist(auto_client_t* client) {
         msgpack_sbuffer_init(&request_buf);
         msgpack_sbuffer_init(&response_buf);
         
-        // ✅ MODIFICADO: Incluir clock na mensagem
+        // Incluir clock na mensagem
         create_channel_message(CHANNELS[i], logical_clock_get(&client->clock), &request_buf);
         
         if (send_request(client, &request_buf, &response_buf) == 0) {
@@ -162,7 +165,7 @@ void send_random_message(auto_client_t* client) {
     msgpack_sbuffer_init(&request_buf);
     msgpack_sbuffer_init(&response_buf);
     
-    // ✅ MODIFICADO: Incluir clock na mensagem
+    // Incluir clock na mensagem
     create_publish_message(client->username, channel, message, logical_clock_get(&client->clock), &request_buf);
     
     if (send_request(client, &request_buf, &response_buf) == 0) {
@@ -191,7 +194,7 @@ void* receive_messages(void* arg) {
         
         int recv_result = zmq_recv(client->sub_socket, msg_buffer, sizeof(msg_buffer) - 1, 0);
         if (recv_result != -1) {
-            // ✅ NOVO: Incrementar relógio ao receber mensagem
+            // Incrementar relógio ao receber mensagem
             logical_clock_increment(&client->clock);
             
             // Parsear mensagem Pub/Sub serializada
@@ -205,7 +208,7 @@ void* receive_messages(void* arg) {
                 extract_string_field(&data, "content", content, sizeof(content));
                 extract_string_field(&data, "target", target, sizeof(target));
                 
-                // ✅ NOVO: Extrair e atualizar clock da mensagem recebida
+                // Extrair e atualizar clock da mensagem recebida
                 int64_t received_clock = extract_clock_field(&data);
                 if (received_clock > 0) {
                     logical_clock_update(&client->clock, received_clock);
@@ -236,11 +239,8 @@ void run_bot(auto_client_t* client) {
     printf("📦 Usando MessagePack para serialização binária\n");
     printf("⏰ Relógio lógico implementado\n");
     
-    // ✅ NOVO: Inicializar relógio lógico
+    // Inicializar relógio lógico
     logical_clock_init(&client->clock);
-    
-    // Inicializar random seed
-    srand(time(NULL) + (int)client->username[4]);
     
     // Conectar sockets
     client->context = zmq_ctx_new();
@@ -336,6 +336,18 @@ int main(int argc, char* argv[]) {
     
     auto_client_t client;
     memset(&client, 0, sizeof(client));
+    
+    // Seed o gerador de números aleatórios ANTES de gerar username
+    // Usar /dev/urandom para melhor aleatoriedade
+    FILE* urandom = fopen("/dev/urandom", "r");
+    unsigned int seed;
+    if (urandom) {
+        fread(&seed, sizeof(seed), 1, urandom);
+        fclose(urandom);
+    } else {
+        seed = time(NULL) ^ getpid() ^ clock();
+    }
+    srand(seed);
     
     // Gerar username único
     generate_username(client.username, sizeof(client.username));

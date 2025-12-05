@@ -1,7 +1,82 @@
 [
   {
-    "name": "test_channel",
-    "created_at": "2025-11-14T17:18:01.803101",
+    "name": "geral",
+    "created_at": "2025-12-03T20:56:41.255462",
+    "message_count": 0
+  },
+  {
+    "name": "tech",
+    "created_at": "2025-12-03T20:56:41.258542",
+    "message_count": 0
+  },
+  {
+    "name": "random",
+    "created_at": "2025-12-03T20:56:41.260124",
+    "message_count": 0
+  },
+  {
+    "name": "offtopic",
+    "created_at": "2025-12-03T20:56:41.262252",
+    "message_count": 0
+  },
+  {
+    "name": "testes",
+    "created_at": "2025-12-03T20:56:41.264486",
+    "message_count": 0
+  },
+  {
+    "name": "teste",
+    "created_at": "2025-12-04T02:03:19.039694",
+    "message_count": 0
+  },
+  {
+    "name": "novo_canal",
+    "created_at": "2025-12-04T02:10:27.444257",
+    "message_count": 0
+  },
+  {
+    "name": "canal_teste",
+    "created_at": "2025-12-04T02:17:52.624933",
+    "message_count": 0
+  },
+  {
+    "name": "novo",
+    "created_at": "2025-12-04T02:19:07.618508",
+    "message_count": 0
+  },
+  {
+    "name": "canal1",
+    "created_at": "2025-12-04T02:29:32.113199",
+    "message_count": 0
+  },
+  {
+    "name": "canal2",
+    "created_at": "2025-12-04T02:29:33.115955",
+    "message_count": 0
+  },
+  {
+    "name": "general",
+    "created_at": "2025-12-04T02:31:20.645204",
+    "message_count": 0
+  },
+  {
+    "name": "demo",
+    "created_at": "2025-12-04T02:32:42.336770",
+    "message_count": 0
+  },
+  {
+    "name": "resultado",
+    "created_at": "2025-12-04T02:34:40.169891",
+    "message_count": 0
+  },
+  {
+    "name": "final",
+    "created_at": "2025-12-04T02:38:06.062664",
+    "message_count": 0
+  },
+  {
+    "name": "oi",
+    "created_at": "2025-12-04T02:39:55.450698",
     "message_count": 0
   }
 ]
